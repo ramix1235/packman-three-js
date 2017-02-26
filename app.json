@@ -11,6 +11,8 @@
 
   ],
   "buildpacks": [
-
+    {
+      "url": "https://github.com/ramix1235/packman-three-js"
+    }
   ]
 }
