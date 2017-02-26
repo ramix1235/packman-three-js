@@ -1,0 +1,19 @@
+{
+  "name": "packman-three-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramix1235/packman-three-js.git"
+  },
+  "author": "V.S. Kharitonov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ramix1235/packman-three-js/issues"
+  },
+  "homepage": "https://github.com/ramix1235/packman-three-js#readme"
+}
