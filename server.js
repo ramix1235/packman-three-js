@@ -1,21 +1,20 @@
-var express = require('express');
-var cors = require('cors');
-var bodyParser = require('body-parser');
+const express = require('express');
+const engine = require('ejs-mate');
+const path = require('path');
+const app = express();
 
-var app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+// process.env.PORT lets the port be set by Heroku
+const port = process.env.PORT || 80;
 
-app.use(cors());
+app.engine('ejs', engine);
+app.use('/public', express.static(path.resolve(__dirname, 'public')));
+app.set('view engine', 'ejs');
+//app.set('views', path.resolve(__dirname, 'view'));
 
-app.use(express.static(__dirname + '/'));
+app.get('/', (req, res) => {
+    res.render('index');
+});
 
-/*app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/app/index.html');
-});*/
-
-app.listen(80, function () {
-    console.log('Example app listening on port 80!');
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}!`);
 });
