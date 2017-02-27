@@ -3,7 +3,6 @@
 const scene = new THREE.Scene(),
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000),
   controls = new THREE.OrbitControls(camera),
-  // controls = new THREE.FirstPersonControls(camera),
   renderer = new THREE.WebGLRenderer(),
   mouse = new THREE.Vector2(),
   raycaster = new THREE.Raycaster();
@@ -14,6 +13,8 @@ init();
 animate();
 
 function init() {
+  scene.fog = new THREE.FogExp2(0xFFFFFF, 0.01);
+
   const axis = new THREE.AxisHelper(20);
   scene.add(axis);
 
@@ -21,8 +22,6 @@ function init() {
 
   controls.maxDisnatce = 10;
   controls.minDistance = 5;
-  // сontrols.movementSpeed = 500;
-  // controls.lookSpeed = 0.1;
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0xFFFFFF);
@@ -49,15 +48,42 @@ function init() {
   scene.add(directionalLight, helperDirectionalLight);
 
   const planeGeometry = new THREE.PlaneGeometry(1000, 1000);
-  const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC3333 });
+  // const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC3333 });
+  const planeTexture = new THREE.TextureLoader().load('public/textures/road.jpg');
+  planeTexture.wrapS = THREE.RepeatWrapping;
+  planeTexture.wrapT = THREE.RepeatWrapping;
+  planeTexture.repeat.set(100, 100);
+  const planeMaterial = new THREE.MeshLambertMaterial({ map: planeTexture });
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
   plane.receiveShadow = true;
   plane.rotation.x = 3 * Math.PI / 2;
   scene.add(plane);
   meshes.push(plane);
 
   const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
-  const boxMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+  // const boxMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+  const boxTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
+  const boxMaterial = new THREE.MultiMaterial([
+    new THREE.MeshLambertMaterial({
+      map: boxTexture
+    }),
+    new THREE.MeshLambertMaterial({
+      map: boxTexture
+    }),
+    new THREE.MeshLambertMaterial({
+      map: boxTexture
+    }),
+    new THREE.MeshLambertMaterial({
+      map: boxTexture
+    }),
+    new THREE.MeshLambertMaterial({
+      map: boxTexture
+    }),
+    new THREE.MeshLambertMaterial({
+      map: boxTexture
+    })
+  ]);
   const box = new THREE.Mesh(boxGeometry, boxMaterial);
   box.castShadow = true;
   box.receiveShadow = true;
@@ -81,21 +107,20 @@ function onMouseDown(event) {
   console.log(mouse);
 
   // Make the sphere follow the mouse
-/*  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-  vector.unproject(camera);
-  var dir = vector.sub(camera.position).normalize();
-  var distance = - camera.position.z / dir.z;
-  var pos = camera.position.clone().add(dir.multiplyScalar(distance));
-  meshes[1].position.copy(pos)*/
+  /*  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+    vector.unproject(camera);
+    var dir = vector.sub(camera.position).normalize();
+    var distance = - camera.position.z / dir.z;
+    var pos = camera.position.clone().add(dir.multiplyScalar(distance));
+    meshes[1].position.copy(pos)*/
 
   raycaster.setFromCamera(mouse, camera);
-  
+
   let intersects = raycaster.intersectObjects(scene.children, true);
   // console.log(scene.children[4].uuid);
   // console.log(intersects[0].object.uuid);
   if (intersects.length > 0 && scene.children[4].uuid === intersects[0].object.uuid) {
-    meshes[1].position.x = mouse.x;
-    meshes[1].position.y = mouse.y;
+    meshes[1].position.set(mouse.x, mouse.y, 0);
     //intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
   }
 }
@@ -113,6 +138,9 @@ function animate() {
 }
 
 function render() {
+  if (camera.position.y < 2) {
+    camera.position.y = 2;  
+  }
   controls.update();
   renderer.render(scene, camera);
 }
