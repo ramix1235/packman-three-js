@@ -8,6 +8,7 @@ const scene = new THREE.Scene(),
   raycaster = new THREE.Raycaster();
 
 let meshes = [];
+let activeObject = null;
 
 init();
 animate();
@@ -20,6 +21,7 @@ function init() {
 
   camera.position.set(0, 7, 12);
 
+  controls.maxPolarAngle = Math.PI / 2;
   controls.maxDisnatce = 10;
   controls.minDistance = 5;
 
@@ -27,11 +29,6 @@ function init() {
   renderer.setClearColor(0xFFFFFF);
   renderer.shadowMap.enabled = true;
   document.body.appendChild(renderer.domElement);
-
-  window.addEventListener('resize', onWindowResize, false);
-  // window.addEventListener('mousemove', onMouseClick, false);
-  window.addEventListener('mousedown', onMouseDown, false);
-  // window.addEventListener('keydown', onKeydown, false);
 
   /*  const spotLight = new THREE.SpotLight(0xFFFFFF);
     spotLight.position.set(50, 150, -50);
@@ -48,7 +45,6 @@ function init() {
   scene.add(directionalLight, helperDirectionalLight);
 
   const planeGeometry = new THREE.PlaneGeometry(1000, 1000);
-  // const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC3333 });
   const planeTexture = new THREE.TextureLoader().load('public/textures/road.jpg');
   planeTexture.wrapS = THREE.RepeatWrapping;
   planeTexture.wrapT = THREE.RepeatWrapping;
@@ -91,6 +87,12 @@ function init() {
   directionalLight.target = box;
   scene.add(box);
   meshes.push(box);
+  controls.target = meshes[1].position;
+
+  window.addEventListener('resize', onWindowResize, false);
+  document.addEventListener('mousedown', onMouseDown, false);
+  document.addEventListener('mousemove', onMouseMove, false);
+  document.addEventListener('mouseup', onMouseUp, false);
 }
 
 function onWindowResize() {
@@ -101,12 +103,9 @@ function onWindowResize() {
 }
 
 function onMouseDown(event) {
-  //event.preventDefault();
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
-  console.log(mouse);
 
-  // Make the sphere follow the mouse
   /*  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
     vector.unproject(camera);
     var dir = vector.sub(camera.position).normalize();
@@ -117,12 +116,32 @@ function onMouseDown(event) {
   raycaster.setFromCamera(mouse, camera);
 
   let intersects = raycaster.intersectObjects(scene.children, true);
-  // console.log(scene.children[4].uuid);
-  // console.log(intersects[0].object.uuid);
   if (intersects.length > 0 && scene.children[4].uuid === intersects[0].object.uuid) {
-    meshes[1].position.set(mouse.x, mouse.y, 0);
-    //intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
+    activeObject = scene.children[4];
+    window.dispatchEvent(new Event('mousemove'));
+    // intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
   }
+}
+
+function onMouseMove(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
+
+  let intersects = raycaster.intersectObjects(scene.children, true);
+  //if (intersects.length > 0 && scene.children[4].uuid === intersects[0].object.uuid) {  
+  if (activeObject === scene.children[4]) {
+    controls.enableRotate = false;
+    meshes[1].position.x += mouse.x;
+    meshes[1].position.z += mouse.y;
+
+    camera.position.x = meshes[1].position.x;
+    camera.position.z = meshes[1].position.z + 20;
+  }
+}
+
+function onMouseUp(event) {
+  controls.enableRotate = true;  
+  activeObject = null;
 }
 
 /*function onKeydown(event) {
@@ -138,9 +157,9 @@ function animate() {
 }
 
 function render() {
-  if (camera.position.y < 2) {
-    camera.position.y = 2;  
-  }
+  /*  if (meshes[1].position.y < 1.5 || meshes[1].position.y > 1.5) {
+      meshes[1].position.y = 1.5;
+    }*/
   controls.update();
   renderer.render(scene, camera);
 }
