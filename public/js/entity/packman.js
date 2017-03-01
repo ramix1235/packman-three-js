@@ -2,7 +2,7 @@
 
 let Packman = class {
   constructor() {
-
+    this.speed = 0.5;
   }
 
   createPackman() {
@@ -10,13 +10,10 @@ let Packman = class {
     controls.target = this.threeobj.position;
   }
 
-  sayHi() {
-    alert('Packman!');
-  }
-
   move() {
-    this.threeobj.position.x += mouse.x;
-    this.threeobj.position.z += mouse.y;
+    let position = this.threeobj.position;
+    position.x += this.speed * mouse.x;
+    position.z += this.speed * mouse.y;
   }
 
   draw() {
