@@ -18,7 +18,6 @@ let Packman = class {
 
   draw() {
     const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
-    // const boxMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
     const boxTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
     const boxMaterial = new THREE.MultiMaterial([
       new THREE.MeshLambertMaterial({
