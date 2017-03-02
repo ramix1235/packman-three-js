@@ -14,6 +14,16 @@ let Packman = class {
     let position = this.threeobj.position;
     position.x += this.speed * mouse.x;
     position.z += this.speed * mouse.y;
+    
+    let rotation = this.threeobj.rotation;
+
+    let dy = mouse.x + 0;
+    let dx = mouse.y + 0;
+    let radians = Math.atan2(dy, dx);
+    let degrees = radians / (Math.PI / 180);
+    rotation.y = radians;
+
+    spotLight.position.set(position.x, 25, position.z);
   }
 
   draw() {
@@ -43,7 +53,7 @@ let Packman = class {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.position.set(0, 1.5, 0);
-    directionalLight.target = mesh;
+    spotLight.target = mesh;
     scene.add(mesh);
 
     return mesh;

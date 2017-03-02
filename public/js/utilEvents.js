@@ -13,7 +13,7 @@ function createFloor() {
   planeTexture.repeat.set(100, 100);
   const planeMaterial = new THREE.MeshLambertMaterial({ map: planeTexture });
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-
+  plane.castShadow = true;
   plane.receiveShadow = true;
   plane.rotation.x = 3 * Math.PI / 2;
   scene.add(plane);

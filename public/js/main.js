@@ -6,7 +6,7 @@ let scene = new THREE.Scene(),
   renderer,
   mouse = new THREE.Vector2(),
   raycaster = new THREE.Raycaster(),
-  directionalLight;
+  spotLight
 // mousePos = {};
 
 let activeObject = null;
@@ -20,7 +20,12 @@ function init() {
   container = document.getElementById('scene');
   document.body.appendChild(container);
 
-  scene.fog = new THREE.FogExp2(0xFFFFFF, 0.01);
+  scene.fog = new THREE.FogExp2(0x000000, 0.03);
+  // const ambientLightent = new THREE.AmbientLight(0xffffff, 0);
+  //scene.add(ambientLightent);
+  const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 2);
+  directionalLight.castShadow = true;
+  scene.add(directionalLight);
 
   const axis = new THREE.AxisHelper(20);
   scene.add(axis);
@@ -35,11 +40,11 @@ function init() {
 
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0xFFFFFF);
+  // renderer.setClearColor(0xFFFFFF);
   renderer.shadowMap.enabled = true;
   container.appendChild(renderer.domElement);
 
-  createDirectionalLight();
+  createSpotLight();
   createFloor();
 
   packman = new Packman();
@@ -66,16 +71,23 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function createDirectionalLight() {
-  directionalLight = new THREE.DirectionalLight(0xFFFFFF);
-  directionalLight.castShadow = true;
-  directionalLight.position.set(5, 10, -5);
-  const helperDirectionalLight = new THREE.CameraHelper(directionalLight.shadow.camera);
-  scene.add(directionalLight, helperDirectionalLight);
+function createSpotLight() {
+  spotLight = new THREE.SpotLight(0xffffff, 1.5);
+  // (color, intensity, distance, angle, penumbra, decay)
+  spotLight.position.set(0, 25, 0);
+
+  spotLight.castShadow = true;
+
+  spotLight.shadow.mapSize.width = 2048;
+  spotLight.shadow.mapSize.height = 2048;
+
+  const helperSpotLight = new THREE.CameraHelper(spotLight.shadow.camera);
+  scene.add(spotLight, helperSpotLight  );
 }
 
 function createFactoryRivals() {
-  let count = 600, min = -58, max = 58;
+  // let count = 600, min = -58, max = 58;
+  let count = 600, min = -100, max = 100;
   const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
   const boxTexture = new THREE.TextureLoader().load('public/textures/box-rivals.jpg');
   const boxMaterial = new THREE.MultiMaterial([
@@ -138,32 +150,31 @@ function createFactoryRivals() {
     mesh.position.set(positionX, 1.5, positionZ);
     scene.add(mesh);
     meshes.push(mesh);
-    console.log(meshes.length);
   };
 
-/*  for (let i = 0; i < 2; i++) {
-    let positionX = Math.floor(Math.random() * (max - min + 1) + min);
-    let positionZ = Math.floor(Math.random() * (max - min + 1) + min);
-    console.log('позиция пэкмена ' + packman.threeobj.position.x + '  ' + packman.threeobj.position.z);
-    console.log('позиция куба ' + positionX + '  ' + positionZ);
-    let distance = Math.sqrt(Math.pow(positionX - packman.threeobj.position.x, 2) + Math.pow(positionZ - packman.threeobj.position.z, 2));
-    console.log('расстояние между их центрами ' + distance);
-    while (distance < 4) {
-      console.log('|||куб слишком близко! Создаю новый|||');
-      positionX = Math.floor(Math.random() * (max - min + 1) + min);
-      positionZ = Math.floor(Math.random() * (max - min + 1) + min);
+  /*  for (let i = 0; i < 2; i++) {
+      let positionX = Math.floor(Math.random() * (max - min + 1) + min);
+      let positionZ = Math.floor(Math.random() * (max - min + 1) + min);
+      console.log('позиция пэкмена ' + packman.threeobj.position.x + '  ' + packman.threeobj.position.z);
       console.log('позиция куба ' + positionX + '  ' + positionZ);
-      distance = Math.sqrt(Math.pow(positionX - packman.threeobj.position.x, 2) + Math.pow(positionZ - packman.threeobj.position.z, 2));
+      let distance = Math.sqrt(Math.pow(positionX - packman.threeobj.position.x, 2) + Math.pow(positionZ - packman.threeobj.position.z, 2));
       console.log('расстояние между их центрами ' + distance);
-    }
-    let mesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.position.set(positionX, 1.5, positionZ);
-    console.log('ДОБАВИЛ КУБ НА СЦЕНУ');
-    scene.add(mesh);
-    meshes.push(mesh);
-  }*/
+      while (distance < 4) {
+        console.log('|||куб слишком близко! Создаю новый|||');
+        positionX = Math.floor(Math.random() * (max - min + 1) + min);
+        positionZ = Math.floor(Math.random() * (max - min + 1) + min);
+        console.log('позиция куба ' + positionX + '  ' + positionZ);
+        distance = Math.sqrt(Math.pow(positionX - packman.threeobj.position.x, 2) + Math.pow(positionZ - packman.threeobj.position.z, 2));
+        console.log('расстояние между их центрами ' + distance);
+      }
+      let mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.position.set(positionX, 1.5, positionZ);
+      console.log('ДОБАВИЛ КУБ НА СЦЕНУ');
+      scene.add(mesh);
+      meshes.push(mesh);
+    }*/
 };
 
 
