@@ -41,13 +41,12 @@ let Packman = class {
       let raycaster = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
       let collisionResults = raycaster.intersectObjects(rivals);
       for (let i = 0; i < collisionResults.length; i++) {
-        this.threeobj.scale.set(this.size.x += 0.05, this.size.y += 0.05, this.size.z += 0.05);
-        this.threeobj.position.y += 0.1; 
+        //this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
+        //this.threeobj.position.y += 0.03;
         rivals.forEach((item, i, arr) => {
           if (item === collisionResults[0].object) {
             scene.remove(item);
             arr.splice(i, 1);
-            console.log(this.threeobj.matrix.elements);
           }
         });
       }
@@ -78,7 +77,10 @@ let Packman = class {
       })
     ]);
 
-    let mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+    var geometry = new THREE.SphereGeometry(1.5, 30 , 30);
+    var material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
+
+    let mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.position.set(0, 1.5, 0);
