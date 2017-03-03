@@ -41,8 +41,8 @@ let Packman = class {
       let raycaster = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
       let collisionResults = raycaster.intersectObjects(rivals);
       for (let i = 0; i < collisionResults.length; i++) {
-        //this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
-        //this.threeobj.position.y += 0.03;
+        this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
+        this.threeobj.position.y += 0.03;
         rivals.forEach((item, i, arr) => {
           if (item === collisionResults[0].object) {
             scene.remove(item);
@@ -77,10 +77,7 @@ let Packman = class {
       })
     ]);
 
-    var geometry = new THREE.SphereGeometry(1.5, 30 , 30);
-    var material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
-
-    let mesh = new THREE.Mesh(geometry, material);
+    let mesh = new THREE.Mesh(boxGeometry, boxMaterial);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.position.set(0, 1.5, 0);
