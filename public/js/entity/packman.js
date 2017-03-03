@@ -33,20 +33,21 @@ let Packman = class {
     //   for example, new THREE.CubeGeometry( 64, 64, 64, 8, 8, 8, wireMaterial )
     //   HOWEVER: when the origin of the ray is within the target mesh, collisions do not occur
     let originPoint = this.threeobj.position.clone();
-
     for (let vertexIndex = 0; vertexIndex < this.threeobj.geometry.vertices.length; vertexIndex++) {
       let localVertex = this.threeobj.geometry.vertices[vertexIndex].clone();
       let globalVertex = localVertex.applyMatrix4(this.threeobj.matrix);
       let directionVector = globalVertex.sub(this.threeobj.position);
 
-      let ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      let collisionResults = ray.intersectObjects(rivals);
-      if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+      let raycaster = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+      let collisionResults = raycaster.intersectObjects(rivals);
+      for (let i = 0; i < collisionResults.length; i++) {
         this.threeobj.scale.set(this.size.x += 0.05, this.size.y += 0.05, this.size.z += 0.05);
+        this.threeobj.position.y += 0.1; 
         rivals.forEach((item, i, arr) => {
           if (item === collisionResults[0].object) {
             scene.remove(item);
             arr.splice(i, 1);
+            console.log(this.threeobj.matrix.elements);
           }
         });
       }

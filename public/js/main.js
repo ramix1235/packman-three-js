@@ -5,7 +5,7 @@ let scene = new THREE.Scene(),
   controls,
   renderer,
   mouse = new THREE.Vector2(),
-  raycaster = new THREE.Raycaster(),
+  raycaster,
   spotLight,
   stats;
 // mousePos = {};

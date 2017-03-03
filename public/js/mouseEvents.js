@@ -2,6 +2,7 @@
 
 function onMouseDown(event) {
   getMousePosition();
+  raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(mouse, camera);
 
   let intersects = raycaster.intersectObjects([packman.threeobj], true);

@@ -22,8 +22,8 @@ function createFloor() {
 };
 
 function createLight() {
-  // const ambientLightent = new THREE.AmbientLight(0xffffff, 0);
-  //scene.add(ambientLightent);
+  const ambientLightent = new THREE.AmbientLight(0xffffff, 2);
+  scene.add(ambientLightent);
 
   const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 2);
   directionalLight.castShadow = true;
@@ -39,7 +39,7 @@ function createLight() {
   spotLight.shadow.mapSize.height = 2048;
 
   const helperSpotLight = new THREE.CameraHelper(spotLight.shadow.camera);
-  scene.add(spotLight, helperSpotLight);
+  //scene.add(spotLight, helperSpotLight);
 };
 
 function createFactoryRivals() {
