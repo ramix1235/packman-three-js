@@ -15,10 +15,16 @@ let packman;
 let container;
 let rivals = [];
 
+// let minMesh, maxMesh, box, packmanBox3;
+
 init();
 animate();
 
 function init() {
+  if (!Detector.webgl) {
+    alert('Your graphics card does not seem to support WebGL.');
+    return;
+  }
   stats = new Stats();
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.left = '0px';
@@ -41,11 +47,7 @@ function init() {
   controls.maxDisnatce = 10;
   controls.minDistance = 5;
 
-  if (Detector.webgl) {
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-  } else {
-    renderer = new THREE.CanvasRenderer();
-  }
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   // renderer.setClearColor(0xFFFFFF);
   renderer.shadowMap.enabled = true;
@@ -57,6 +59,19 @@ function init() {
   packman = new Packman();
   packman.createPackman();
   createFactoryRivals();
+
+/* box = new THREE.Box3().setFromObject(packman.threeobj);
+  minMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
+  minMesh.position.copy(box.min);
+  scene.add(minMesh);
+  maxMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
+  maxMesh.position.copy(box.max);
+  scene.add(maxMesh);*/
+
+/* packmanBox3 = new THREE.Box3().setFromObject(packman.threeobj);
+  let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
+  scene.add(boxHelper);*/
+
   window.addEventListener('resize', onWindowResize, false);
   document.addEventListener('mousedown', onMouseDown, false);
   document.addEventListener('mousemove', onMouseMove, false);
