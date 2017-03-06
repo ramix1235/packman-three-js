@@ -22,24 +22,43 @@ let Packman = class {
     let radians = Math.atan2(dy, dx);
     rotation.y = radians;
 
+    this.threeobj.rotation.x = mouse.y;
+
     spotLight.position.set(position.x, 25, position.z);
   }
 
   collision() {
-    let packmanBox3 = new THREE.Box3().setFromObject(this.threeobj);
-    /*    let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
-        scene.add(boxHelper);*/
-
+    //let packmanBox3 = new THREE.Box3().setFromObject(this.threeobj);
+    /* let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
+    scene.add(boxHelper);*/
+    let packmanSphere3 = new THREE.Sphere(this.threeobj.position, this.threeobj.children[1].geometry.boundingSphere.radius);
     for (let i = 0; i < rivals.elements.length; i++) {
       let rivalBox3 = new THREE.Box3().setFromObject(rivals.elements[i]);
-      let collision = packmanBox3.intersectsBox(rivalBox3);
+      //let collision = packmanBox3.intersectsBox(rivalBox3);
+      //let rivalSphere3 = new THREE.Sphere(rivals.elements[i].position, rivals.elements[i].geometry.boundingSphere.radius);   
+      //let collision = packmanSphere3.intersectsSphere(rivalSphere3);
+      let collision = packmanSphere3.intersectsBox(rivalBox3);
       if (collision) {
         scene.remove(rivals.elements[i]);
         rivals.elements.splice(i, 1);
         this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
         this.threeobj.position.y += 0.03;
+        this.threeobj.children[1].geometry.boundingSphere.radius += 0.03;
       }
     }
+
+    // expand THREE.js Sphere to support collision tests vs Box3
+    // we are creating a vector outside the method scope to
+    // avoid spawning a new instance of Vector3 on every check
+    THREE.Sphere.__closest = new THREE.Vector3();
+    THREE.Sphere.prototype.intersectsBox = function (box) {
+      // get box closest point to sphere center by clamping
+      THREE.Sphere.__closest.set(this.center.x, this.center.y, this.center.z);
+      THREE.Sphere.__closest.clamp(box.min, box.max);
+
+      let distance = this.center.distanceToSquared(THREE.Sphere.__closest);
+      return distance < (this.radius * this.radius);
+    };
 
     /* let originPoint = this.threeobj.position.clone();
     let packmanBox3 = new THREE.Box3().setFromObject(this.threeobj);
@@ -47,7 +66,7 @@ let Packman = class {
       let localVertex = this.threeobj.geometry.vertices[vertexIndex].clone();
       let globalVertex = localVertex.applyMatrix4(this.threeobj.matrix);
       let directionVector = globalVertex.sub(this.threeobj.position);
-
+ 
       let raycaster = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
       let collisionResults = raycaster.intersectObjects(rivals.elements);
       // for (let i = 0; i < collisionResults.length; i++) {
@@ -115,14 +134,52 @@ let Packman = class {
       })
     ]);
 
-    let mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+    // const sphereGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, 0, Math.PI); // default
+
+    // const sphereGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI * 2, Math.PI / 2);
+    // const sphereGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
+
+    // const sphereGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, 0, Math.PI / 2);
+
+/*    const sphereTexture = new THREE.TextureLoader().load('public/textures/sphere.jpg');
+    const sphereMaterial = new THREE.MeshLambertMaterial({ map: sphereTexture });
+
+    const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.position.set(0, 1.5, 0);
     spotLight.target = mesh;
-    scene.add(mesh);
+    scene.add(mesh);*/
 
-    return mesh;
+    const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
+    const sphereTopTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
+    const sphereTopMaterial = new THREE.MeshLambertMaterial({ map: sphereTopTexture });
+    const sphereTopMesh = new THREE.Mesh(sphereTopGeometry, sphereTopMaterial);
+    sphereTopMesh.position.y = Math.PI / 2;
+    sphereTopMesh.rotation.z = Math.PI / 2;
+
+    const groupSphereTop = new THREE.Group();
+    groupSphereTop.add(sphereTopMesh);
+    groupSphereTop.position.z = -Math.PI / 180 * 90;
+    groupSphereTop.rotation.y = Math.PI / 180 * 90;
+
+    groupSphereTop.rotation.z = Math.PI / 180 * 55;
+
+    const sphereBottomGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
+    const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
+    const sphereBottomMaterial = new THREE.MeshLambertMaterial({ map: sphereBottomTexture });
+    const sphereBottomMesh = new THREE.Mesh(sphereBottomGeometry, sphereBottomMaterial);
+
+
+    const groupMesh = new THREE.Group();
+    groupMesh.add(groupSphereTop, sphereBottomMesh);
+    groupMesh.castShadow = true;
+    groupMesh.receiveShadow = true;
+    groupMesh.position.set(0, 1.5, 0);
+    spotLight.target = groupMesh;
+    scene.add(groupMesh);
+
+    return groupMesh;
   }
 
 };
