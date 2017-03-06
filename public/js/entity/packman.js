@@ -6,7 +6,7 @@ let Packman = class {
     this.size = new THREE.Vector3(1, 1, 1);
   }
 
-  createPackman() {
+  create() {
     this.threeobj = this.draw();
     controls.target = this.threeobj.position;
   }
@@ -27,20 +27,20 @@ let Packman = class {
 
   collision() {
     let packmanBox3 = new THREE.Box3().setFromObject(this.threeobj);
-    let collision;
     /*    let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
         scene.add(boxHelper);*/
 
-    for (let i = 0; i < rivals.length; i++) {
-      let rivalBox3 = new THREE.Box3().setFromObject(rivals[i]);
-      collision = packmanBox3.intersectsBox(rivalBox3);
+    for (let i = 0; i < rivals.elements.length; i++) {
+      let rivalBox3 = new THREE.Box3().setFromObject(rivals.elements[i]);
+      let collision = packmanBox3.intersectsBox(rivalBox3);
       if (collision) {
-        scene.remove(rivals[i]);
-        rivals.splice(i, 1);
+        scene.remove(rivals.elements[i]);
+        rivals.elements.splice(i, 1);
         this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
         this.threeobj.position.y += 0.03;
       }
     }
+
     /* let originPoint = this.threeobj.position.clone();
     let packmanBox3 = new THREE.Box3().setFromObject(this.threeobj);
     for (let vertexIndex = 0; vertexIndex < this.threeobj.geometry.vertices.length; vertexIndex++) {
@@ -49,7 +49,7 @@ let Packman = class {
       let directionVector = globalVertex.sub(this.threeobj.position);
 
       let raycaster = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      let collisionResults = raycaster.intersectObjects(rivals);
+      let collisionResults = raycaster.intersectObjects(rivals.elements);
       // for (let i = 0; i < collisionResults.length; i++) {
       if (collisionResults.length > 0) {
         // let rivalBox3 = new THREE.Box3().setFromObject(collisionResults[i].object);
@@ -77,11 +77,11 @@ let Packman = class {
       let directionVector = globalVertex.sub(this.threeobj.position);
   
       let raycaster = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      let collisionResults = raycaster.intersectObjects(rivals);
+      let collisionResults = raycaster.intersectObjects(rivals.elements);
       for (let i = 0; i < collisionResults.length; i++) {
         this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
         this.threeobj.position.y += 0.03;
-        rivals.forEach((item, i, arr) => {
+        rivals.elements.forEach((item, i, arr) => {
           if (item === collisionResults[0].object) {
             scene.remove(item);
             arr.splice(i, 1);

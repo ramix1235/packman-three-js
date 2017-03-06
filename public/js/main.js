@@ -12,8 +12,8 @@ let scene = new THREE.Scene(),
 
 let activeObject = null;
 let packman;
+let rivals;
 let container;
-let rivals = [];
 
 // let minMesh, maxMesh, box, packmanBox3;
 
@@ -57,8 +57,10 @@ function init() {
   createFloor();
 
   packman = new Packman();
-  packman.createPackman();
-  createFactoryRivals();
+  packman.create();
+
+  rivals = new Rivals();
+  rivals.create();
 
 /* box = new THREE.Box3().setFromObject(packman.threeobj);
   minMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));

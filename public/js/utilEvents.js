@@ -22,12 +22,12 @@ function createFloor() {
 };
 
 function createLight() {
-  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
-  scene.add(ambientLightent);
+/* const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
+  scene.add(ambientLightent);*/
 
   const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
   directionalLight.castShadow = true;
-  // scene.add(directionalLight);
+  scene.add(directionalLight);
 
   spotLight = new THREE.SpotLight(0xffffff, 2);
   spotLight.position.set(0, 25, 0);
@@ -38,79 +38,7 @@ function createLight() {
   spotLight.shadow.mapSize.height = 2048;
 
   const helperSpotLight = new THREE.CameraHelper(spotLight.shadow.camera);
-  // scene.add(spotLight, helperSpotLight);
-};
-
-function createFactoryRivals() {
-  // let count = 600, min = -58, max = 58;
-  let count = 60, min = -50, max = 50;
-  const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
-  const boxTexture = new THREE.TextureLoader().load('public/textures/box-rivals.jpg');
-  const boxMaterial = new THREE.MultiMaterial([
-    new THREE.MeshLambertMaterial({
-      map: boxTexture
-    }),
-    new THREE.MeshLambertMaterial({
-      map: boxTexture
-    }),
-    new THREE.MeshLambertMaterial({
-      map: boxTexture
-    }),
-    new THREE.MeshLambertMaterial({
-      map: boxTexture
-    }),
-    new THREE.MeshLambertMaterial({
-      map: boxTexture
-    }),
-    new THREE.MeshLambertMaterial({
-      map: boxTexture
-    })
-  ]);
-
-  let positionX;
-  let positionZ;
-  let distance;
-  rivals.push(packman.threeobj);  
-  for (let i = 0; i < count; i++) {
-    createNewСoordinates();
-    // сравниваем эти координаты с уже существующими
-    for (let j = 0; j < rivals.length; j++) {
-      // между новыми кординатами и массивом существующих
-      distanceBetweenTwoPoints(j);
-      // если где-то пересечение
-      while (distance < 4) {
-        createNewСoordinates();
-        // опять сравниваем их с остальными
-        for (let k = 0; k < rivals.length; k++) {
-          // между новыми кординатами и массивом существующих
-          distanceBetweenTwoPoints(k);
-          // если где-то пересечение
-          if (distance < 4) {
-            break;
-          };
-        };
-      };
-
-    };
-
-    let mesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.position.set(positionX, 1.5, positionZ);
-    scene.add(mesh);
-    rivals.push(mesh);
-
-    function createNewСoordinates() {
-      positionX = Math.floor(Math.random() * (max - min + 1) + min);
-      positionZ = Math.floor(Math.random() * (max - min + 1) + min);
-    };
-
-    function distanceBetweenTwoPoints(j) {
-      distance = Math.sqrt(Math.pow(positionX - rivals[j].position.x, 2) + Math.pow(positionZ - rivals[j].position.z, 2));
-    };
-  };
-  rivals.shift(packman.threeobj);
-
+  scene.add(spotLight, helperSpotLight);
 };
 
 /*function findRaycasterPoint(event) {
