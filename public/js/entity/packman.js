@@ -12,7 +12,7 @@ let Packman = class {
     this.threeobj = this.draw();
     controls.target = this.threeobj.position;
     this.eatInit();
-  }
+  };
 
   eatInit() {
     let currentAngle = 90;
@@ -32,7 +32,7 @@ let Packman = class {
       this.groupMesh.children[0].rotation.z = Math.PI / 180 * currentAngle;
       setTimeout(run.bind(this), 10);
     }.bind(this), 100)
-  }
+  };
 
   move() {
     let position = this.threeobj.position;
@@ -48,7 +48,7 @@ let Packman = class {
     this.threeobj.rotation.x = mouse.y;
 
     spotLight.position.set(position.x, 25, position.z);
-  }
+  };
 
   collision() {
     //let packmanBox3 = new THREE.Box3().setFromObject(this.threeobj);
@@ -131,7 +131,7 @@ let Packman = class {
         });
       }
     }*/
-  }
+  };
 
   draw() {
     const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
@@ -201,6 +201,6 @@ let Packman = class {
     scene.add(this.groupMesh);
 
     return this.groupMesh;
-  }
+  };
 
 };

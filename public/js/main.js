@@ -15,6 +15,7 @@ let activeObject = null;
 let packman;
 let rivals;
 let container;
+let floor;
 
 // let minMesh, maxMesh, box, packmanBox3;
 
@@ -55,7 +56,7 @@ function init() {
   container.appendChild(renderer.domElement);
 
   createLight();
-  createFloor();
+  floor = createFloor();
 
   packman = new Packman();
   packman.create();
@@ -85,6 +86,7 @@ function animate() {
   if (activeObject) {
     activeObject.move();
     activeObject.collision();
+    onFloor(floor);
     updateCameraPosition();
   }
   render();

@@ -8,22 +8,38 @@ function onWindowResize() {
 };
 
 function createFloor() {
-  const planeGeometry = new THREE.PlaneGeometry(1000, 1000);
+  const planeGeometry = new THREE.PlaneGeometry(100, 100);
   const planeTexture = new THREE.TextureLoader().load('public/textures/road.jpg');
   planeTexture.wrapS = THREE.RepeatWrapping;
   planeTexture.wrapT = THREE.RepeatWrapping;
-  planeTexture.repeat.set(100, 100);
+  planeTexture.repeat.set(10, 10);
   const planeMaterial = new THREE.MeshLambertMaterial({ map: planeTexture });
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.castShadow = true;
   plane.receiveShadow = true;
   plane.rotation.x = 3 * Math.PI / 2;
   scene.add(plane);
+  return plane;
+};
+
+//let currentPosition;
+
+function onFloor(floor) {
+  let packmanSphere3 = new THREE.Sphere(packman.threeobj.position, packman.threeobj.children[1].geometry.boundingSphere.radius);
+  let floorBox3 = new THREE.Box3().setFromObject(floor);
+  let collision = packmanSphere3.intersectsBox(floorBox3);
+/*  if (collision) {
+    currentPosition = packman.threeobj.position.clone();
+  }*/
+  if (!collision) {  
+    packman.threeobj.position.y -= 1;
+    //packman.threeobj.position.set(currentPosition.x, currentPosition.y, currentPosition.z); 
+  }
 };
 
 function createLight() {
-/*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
-  scene.add(ambientLightent);*/
+  /*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
+    scene.add(ambientLightent);*/
 
   const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
   directionalLight.castShadow = true;
