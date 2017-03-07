@@ -176,7 +176,7 @@ let Packman = class {
 
     const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     const sphereTopTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
-    const sphereTopMaterial = new THREE.MeshLambertMaterial({ map: sphereTopTexture });
+    const sphereTopMaterial = new THREE.MeshLambertMaterial({ map: sphereTopTexture, transparent: true });
     const sphereTopMesh = new THREE.Mesh(sphereTopGeometry, sphereTopMaterial);
     sphereTopMesh.position.y = Math.PI / 2;
     sphereTopMesh.rotation.z = Math.PI / 2;
@@ -191,7 +191,7 @@ let Packman = class {
 
     const sphereBottomGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
-    const sphereBottomMaterial = new THREE.MeshLambertMaterial({ map: sphereBottomTexture });
+    const sphereBottomMaterial = new THREE.MeshLambertMaterial({ map: sphereBottomTexture, transparent: true });
     const sphereBottomMesh = new THREE.Mesh(sphereBottomGeometry, sphereBottomMaterial);
     sphereBottomMesh.castShadow = true;
 

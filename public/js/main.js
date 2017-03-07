@@ -48,6 +48,7 @@ function init() {
   controls.maxPolarAngle = Math.PI / 2;
   controls.maxDisnatce = 10;
   controls.minDistance = 5;
+  controls.enablePan = false;
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -86,8 +87,8 @@ function animate() {
   if (activeObject) {
     activeObject.move();
     activeObject.collision();
-    onFloor(floor);
     updateCameraPosition();
+    onFloor(floor);
   }
   render();
   requestAnimationFrame(animate);

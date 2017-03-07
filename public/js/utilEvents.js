@@ -28,11 +28,26 @@ function onFloor(floor) {
   let packmanSphere3 = new THREE.Sphere(packman.threeobj.position, packman.threeobj.children[1].geometry.boundingSphere.radius);
   let floorBox3 = new THREE.Box3().setFromObject(floor);
   let collision = packmanSphere3.intersectsBox(floorBox3);
-/*  if (collision) {
-    currentPosition = packman.threeobj.position.clone();
-  }*/
-  if (!collision) {  
+  /*  if (collision) {
+      currentPosition = packman.threeobj.position.clone();
+    }*/
+  if (!collision) {
     packman.threeobj.position.y -= 1;
+    setTimeout(() => {
+      packman.threeobj.position.set(0, 1.5, 0);
+      spotLight.position.set(packman.threeobj.position.x, 25, packman.threeobj.position.z);
+      camera.position.set(0, 10, 20);
+      packman.threeobj.rotation.x = 0;
+      packman.threeobj.rotation.y = 0;
+      activeObject = null;
+      let isVisible = true;
+      let changeVisibility = setInterval(() => {
+        isVisible = !isVisible;
+        packman.groupMesh.children[0].children[0].material.opacity = isVisible ? 1 : 0.1;
+        packman.groupMesh.children[1].material.opacity = isVisible ? 1 : 0.1;
+      }, 100);
+      setTimeout(() => { clearInterval(changeVisibility) }, 1000);
+    }, 1000);
     //packman.threeobj.position.set(currentPosition.x, currentPosition.y, currentPosition.z); 
   }
 };
@@ -45,7 +60,7 @@ function createLight() {
   directionalLight.castShadow = true;
   scene.add(directionalLight);
 
-  spotLight = new THREE.SpotLight(0xffffff, 2);
+  spotLight = new THREE.SpotLight(0xFFFFFF, 2);
   spotLight.position.set(0, 25, 0);
 
   spotLight.castShadow = true;
