@@ -5,43 +5,34 @@ let Packman = class {
     this.speed = 0.5;
     this.size = new THREE.Vector3(1, 1, 1);
     this.groupMesh = new THREE.Group();
-    //this.timer;
     this.eatSpeed;
   }
 
   create() {
     this.threeobj = this.draw();
     controls.target = this.threeobj.position;
-    this.eat();
+    this.eatInit();
   }
 
-  eat() {
-    let angle = 90;
-    this.eatSpeed = 2;
+  eatInit() {
+    let currentAngle = 90;
+    let startAngle = 90;
+    let endAngle = 45;
     let direction = false;
-    this.timer = setTimeout(function run() {
-      if (angle >= 90) {
+    this.eatSpeed = 2;
+    setTimeout(function run() {
+      if (currentAngle >= startAngle) {
         direction = true;
       }
-      if (angle <= 45) {
+      if (currentAngle <= endAngle) {
         direction = false;
       }
+      currentAngle += direction ? -this.eatSpeed : this.eatSpeed;
 
-      if (direction) {
-        angle -= this.eatSpeed;
-      }
-      if (!direction) {
-        angle += this.eatSpeed;
-      }
-
-      this.groupMesh.children[0].rotation.z = Math.PI / 180 * angle;
+      this.groupMesh.children[0].rotation.z = Math.PI / 180 * currentAngle;
       setTimeout(run.bind(this), 10);
     }.bind(this), 100)
   }
-
-  /*  eatStop() {
-      clearTimeout(this.timer);
-    }*/
 
   move() {
     let position = this.threeobj.position;
