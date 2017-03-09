@@ -9,6 +9,7 @@ let Rivals = class {
     // let count = 600, min = -58, max = 58;
     let count = 60, min = -50, max = 50;
     const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
+    boxGeometry.computeBoundingBox();
     const boxTexture = new THREE.TextureLoader().load('public/textures/box-rivals.jpg');
     const boxMaterial = new THREE.MultiMaterial([
       new THREE.MeshLambertMaterial({

@@ -1,11 +1,36 @@
 'use strict';
 
+/*function onKeydown(event) {
+  if (event.key === 'w') {
+    console.log(event);
+    meshes[1].position.z -= 0.1;
+  }
+}*/
+
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
 };
+
+function createText(text, score) {
+  let loader = new THREE.FontLoader();
+  loader.load('../../public/fonts/KenPixel_Regular.json', (font) => {
+    let textGeo = new THREE.TextGeometry(text, {
+      font: font,
+      size: 2.5,
+      height: 0.3
+    });
+    let textMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+    score = new THREE.Mesh(textGeo, textMaterial);
+    score.position.set(0, 0, 0);
+    score.castShadow = true;
+    score.receiveShadow = true;
+    scene.add(score);
+    //scene.remove(score);
+  });
+}
 
 function createFloor() {
   const planeGeometry = new THREE.PlaneGeometry(100, 100);
@@ -21,40 +46,49 @@ function createFloor() {
   scene.add(plane);
   return plane;
 };
-
-//let currentPosition;
+  
+let currentPosition;
+let gameOver = false;
 
 function onFloor(floor) {
-  let packmanSphere3 = new THREE.Sphere(packman.threeobj.position, packman.threeobj.children[1].geometry.boundingSphere.radius);
+  if (gameOver === true) {
+    packman.threeobj.position.y -= 1; 
+    return;
+  }
   let floorBox3 = new THREE.Box3().setFromObject(floor);
-  let collision = packmanSphere3.intersectsBox(floorBox3);
-  /*  if (collision) {
-      currentPosition = packman.threeobj.position.clone();
-    }*/
+  let collision = packman.Sphere3.intersectsBox(floorBox3);
+  if (collision) {
+    currentPosition = packman.Sphere3.center.clone();
+  }
   if (!collision) {
-    packman.threeobj.position.y -= 1;
+    gameOver = true;
     setTimeout(() => {
-      packman.threeobj.position.set(0, 1.5, 0);
-      spotLight.position.set(packman.threeobj.position.x, 25, packman.threeobj.position.z);
-      camera.position.set(0, 10, 20);
-      packman.threeobj.rotation.x = 0;
-      packman.threeobj.rotation.y = 0;
-      activeObject = null;
+      resetPackman();
       let isVisible = true;
       let changeVisibility = setInterval(() => {
         isVisible = !isVisible;
-        packman.groupMesh.children[0].children[0].material.opacity = isVisible ? 1 : 0.1;
-        packman.groupMesh.children[1].material.opacity = isVisible ? 1 : 0.1;
+        packman.threeobj.children[0].children[0].material.opacity = isVisible ? 1 : 0.1;
+        packman.threeobj.children[1].material.opacity = isVisible ? 1 : 0.1;
       }, 100);
       setTimeout(() => { clearInterval(changeVisibility) }, 1000);
     }, 1000);
-    //packman.threeobj.position.set(currentPosition.x, currentPosition.y, currentPosition.z); 
   }
 };
 
+function resetPackman() {
+  gameOver = false;
+  //console.log(currentPosition.y);
+  packman.threeobj.position.set(0, currentPosition.y, 0);
+  spotLight.position.set(packman.threeobj.position.x, 25, packman.threeobj.position.z);
+  camera.position.set(0, 10, 20);
+  packman.threeobj.rotation.x = 0;
+  packman.threeobj.rotation.y = 0;
+  activeObject = null;
+}
+
 function createLight() {
-  /*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
-    scene.add(ambientLightent);*/
+/*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
+  scene.add(ambientLightent);*/
 
   const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
   directionalLight.castShadow = true;

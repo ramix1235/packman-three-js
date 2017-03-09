@@ -4,7 +4,7 @@ let Packman = class {
   constructor() {
     this.speed = 0.5;
     this.size = new THREE.Vector3(1, 1, 1);
-    this.groupMesh = new THREE.Group();
+    this.Sphere3;
     this.eatSpeed;
   }
 
@@ -12,6 +12,7 @@ let Packman = class {
     this.threeobj = this.draw();
     controls.target = this.threeobj.position;
     this.eatInit();
+    this.Sphere3 = new THREE.Sphere(this.threeobj.position, this.threeobj.children[1].geometry.boundingSphere.radius);
   };
 
   eatInit() {
@@ -29,7 +30,7 @@ let Packman = class {
       }
       currentAngle += direction ? -this.eatSpeed : this.eatSpeed;
 
-      this.groupMesh.children[0].rotation.z = Math.PI / 180 * currentAngle;
+      this.threeobj.children[0].rotation.z = Math.PI / 180 * currentAngle;
       setTimeout(run.bind(this), 10);
     }.bind(this), 100)
   };
@@ -54,13 +55,13 @@ let Packman = class {
     //let packmanBox3 = new THREE.Box3().setFromObject(this.threeobj);
     /* let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
     scene.add(boxHelper);*/
-    let packmanSphere3 = new THREE.Sphere(this.threeobj.position, this.threeobj.children[1].geometry.boundingSphere.radius);
+    this.Sphere3 = new THREE.Sphere(this.threeobj.position, this.threeobj.children[1].geometry.boundingSphere.radius);
     for (let i = 0; i < rivals.elements.length; i++) {
       let rivalBox3 = new THREE.Box3().setFromObject(rivals.elements[i]);
       //let collision = packmanBox3.intersectsBox(rivalBox3);
       //let rivalSphere3 = new THREE.Sphere(rivals.elements[i].position, rivals.elements[i].geometry.boundingSphere.radius);   
       //let collision = packmanSphere3.intersectsSphere(rivalSphere3);
-      let collision = packmanSphere3.intersectsBox(rivalBox3);
+      let collision = this.Sphere3.intersectsBox(rivalBox3);
       if (collision) {
         scene.remove(rivals.elements[i]);
         rivals.elements.splice(i, 1);
@@ -176,7 +177,8 @@ let Packman = class {
 
     const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     const sphereTopTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
-    const sphereTopMaterial = new THREE.MeshLambertMaterial({ map: sphereTopTexture, transparent: true });
+    // const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 0.7 });
+    const sphereTopMaterial = new THREE.MeshLambertMaterial({ map: sphereTopTexture, transparent: true});
     const sphereTopMesh = new THREE.Mesh(sphereTopGeometry, sphereTopMaterial);
     sphereTopMesh.position.y = Math.PI / 2;
     sphereTopMesh.rotation.z = Math.PI / 2;
@@ -190,17 +192,18 @@ let Packman = class {
     //groupSphereTop.rotation.z = Math.PI / 180 * 65;
 
     const sphereBottomGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
+    sphereBottomGeometry.computeBoundingSphere();
     const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
     const sphereBottomMaterial = new THREE.MeshLambertMaterial({ map: sphereBottomTexture, transparent: true });
     const sphereBottomMesh = new THREE.Mesh(sphereBottomGeometry, sphereBottomMaterial);
     sphereBottomMesh.castShadow = true;
+    let groupMesh = new THREE.Group();
+    groupMesh.add(groupSphereTop, sphereBottomMesh);
+    groupMesh.position.set(0, 1.5, 0);
+    spotLight.target = groupMesh;
+    scene.add(groupMesh);
 
-    this.groupMesh.add(groupSphereTop, sphereBottomMesh);
-    this.groupMesh.position.set(0, 1.5, 0);
-    spotLight.target = this.groupMesh;
-    scene.add(this.groupMesh);
-
-    return this.groupMesh;
+    return groupMesh;
   };
 
 };

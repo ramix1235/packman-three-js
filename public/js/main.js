@@ -16,6 +16,7 @@ let packman;
 let rivals;
 let container;
 let floor;
+let score;
 
 // let minMesh, maxMesh, box, packmanBox3;
 
@@ -57,7 +58,6 @@ function init() {
   container.appendChild(renderer.domElement);
 
   createLight();
-  floor = createFloor();
 
   packman = new Packman();
   packman.create();
@@ -65,17 +65,21 @@ function init() {
   rivals = new Rivals();
   rivals.create();
 
-/* box = new THREE.Box3().setFromObject(packman.threeobj);
-  minMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
-  minMesh.position.copy(box.min);
-  scene.add(minMesh);
-  maxMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
-  maxMesh.position.copy(box.max);
-  scene.add(maxMesh);*/
+  floor = createFloor();
 
-/* packmanBox3 = new THREE.Box3().setFromObject(packman.threeobj);
-  let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
-  scene.add(boxHelper);*/
+  createText('packman');
+
+  /* box = new THREE.Box3().setFromObject(packman.threeobj);
+    minMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
+    minMesh.position.copy(box.min);
+    scene.add(minMesh);
+    maxMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
+    maxMesh.position.copy(box.max);
+    scene.add(maxMesh);*/
+
+  /* packmanBox3 = new THREE.Box3().setFromObject(packman.threeobj);
+    let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
+    scene.add(boxHelper);*/
 
   window.addEventListener('resize', onWindowResize, false);
   document.addEventListener('mousedown', onMouseDown, false);
@@ -88,7 +92,6 @@ function animate() {
     activeObject.move();
     activeObject.collision();
     updateCameraPosition();
-    onFloor(floor);
   }
   render();
   requestAnimationFrame(animate);
@@ -97,6 +100,7 @@ function animate() {
 function render() {
   controls.update();
   stats.update();
+  onFloor(floor);
   renderer.render(scene, camera);
 };
 
