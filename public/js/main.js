@@ -17,6 +17,7 @@ let rivals;
 let container;
 let floor;
 let score;
+let scoreSprite;
 
 // let minMesh, maxMesh, box, packmanBox3;
 
@@ -40,7 +41,7 @@ function init() {
   scene.fog = new THREE.FogExp2(0x000000, 0.03);
 
   const axis = new THREE.AxisHelper(20);
-  scene.add(axis);
+  //scene.add(axis);
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
   camera.position.set(0, 10, 20);
@@ -67,8 +68,10 @@ function init() {
 
   floor = createFloor();
 
+  score = createHTMLText(rivals.elements.length, 100, 60);
+  scoreSprite = createCanvasSpriteText();
+  createHTMLText(`${rivals.elements.length} /`, 100, 10);
   createText('packman');
-
   /* box = new THREE.Box3().setFromObject(packman.threeobj);
     minMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
     minMesh.position.copy(box.min);
@@ -85,14 +88,15 @@ function init() {
   document.addEventListener('mousedown', onMouseDown, false);
   document.addEventListener('mousemove', onMouseMove, false);
   document.addEventListener('mouseup', onMouseUp, false);
+  document.addEventListener('keydown', onKeyDown, false);
 };
 
 function animate() {
   if (activeObject) {
     activeObject.move();
-    activeObject.collision();
     updateCameraPosition();
-  }
+  };
+  packman.collision();
   render();
   requestAnimationFrame(animate);
 };
