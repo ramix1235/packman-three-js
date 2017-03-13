@@ -7,57 +7,24 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
-function createText(text) {
-  let loader = new THREE.FontLoader();
-  loader.load('../../public/fonts/KenPixel_Regular.json', (font) => {
-    let textGeo = new THREE.TextGeometry(text, {
-      font: font,
-      size: 2.5,
-      height: 0.3
-    });
-    let textMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, specular: 0xFFFFFF });
-    let score = new THREE.Mesh(textGeo, textMaterial);
-    score.position.set(2, 0, 0);
-    score.castShadow = true;
-    score.receiveShadow = true;
-    scene.add(score);
-    //scene.remove(score);
-  });
-}
+function createLight() {
+  /*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
+    scene.add(ambientLightent);*/
 
-function createHTMLText(text, top, left) {
-  let element = document.createElement('div');
-  element.style.position = 'absolute';
-  element.style.width = 100;
-  element.style.height = 100;
-  element.style.color = 'red';
-  element.style.fontSize = 30 + 'px';
-  element.innerHTML = text;
-  element.style.top = top + 'px';
-  element.style.left = left + 'px';
-  document.body.appendChild(element);
-  return element;
-};
+  const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+  directionalLight.castShadow = true;
+  scene.add(directionalLight);
 
-function createCanvasSpriteText() {
-  let canvas = document.createElement('canvas');
-  let context = canvas.getContext('2d');
-  context.canvas.height = 128;
-  context.canvas.width = 256;
-  context.textAlign = 'center';
-  context.imageSmoothingEnabled = false;
-  context.font = '65px Arial';
-  context.fillStyle = 'rgba(255, 0, 0, 0.5)';
-  context.fillText(rivals.elements.length, 125, 85);
-  let texture = new THREE.Texture(canvas);
-  texture.needsUpdate = true;
-  //var spriteMap = new THREE.TextureLoader().load('../../public/textures/eye.jpg');
-  let spriteMaterial = new THREE.SpriteMaterial({ map: texture, color: 0xFFFFFF });
-  let sprite = new THREE.Sprite(spriteMaterial);
-  sprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
-  sprite.scale.set(2, 2, 2);
-  scene.add(sprite);
-  return sprite;
+  spotLight = new THREE.SpotLight(0xFFFFFF, 2);
+  spotLight.position.set(0, 25, 0);
+
+  spotLight.castShadow = true;
+
+  spotLight.shadow.mapSize.width = 2048;
+  spotLight.shadow.mapSize.height = 2048;
+
+  const helperSpotLight = new THREE.CameraHelper(spotLight.shadow.camera);
+  scene.add(spotLight);
 };
 
 function createFloor() {
@@ -105,7 +72,6 @@ function onFloor(floor) {
 
 function resetPackman() {
   gameOver = false;
-  //console.log(currentPosition.y);
   packman.threeobj.position.set(0, currentPosition.y, 0);
   spotLight.position.set(packman.threeobj.position.x, 25, packman.threeobj.position.z);
   camera.position.set(0, 10, 20);
@@ -115,25 +81,32 @@ function resetPackman() {
   scoreSprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
 }
 
-function createLight() {
-/*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
-  scene.add(ambientLightent);*/
-
-  const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-  directionalLight.castShadow = true;
-  scene.add(directionalLight);
-
-  spotLight = new THREE.SpotLight(0xFFFFFF, 2);
-  spotLight.position.set(0, 25, 0);
-
-  spotLight.castShadow = true;
-
-  spotLight.shadow.mapSize.width = 2048;
-  spotLight.shadow.mapSize.height = 2048;
-
-  const helperSpotLight = new THREE.CameraHelper(spotLight.shadow.camera);
-  scene.add(spotLight);
-};
+function isFinishGame() {
+  if (rivals.rivalsLength == 0 && packman.size.x + packman.size.y + packman.size.z >= 4) {
+    let element = document.createElement('div');
+    element.style.position = 'absolute';
+    element.style.width = 100;
+    element.style.height = 100;
+    element.style.color = 'red';
+    element.style.fontSize = 30 + 'px';
+    element.innerHTML = 'WIN';
+    element.style.top = window.innerHeight / 2 + 'px';
+    element.style.left = window.innerWidth / 2 + 'px';
+    document.body.appendChild(element);
+  }
+  else if (rivals.rivalsLength == 0) {
+    let element = document.createElement('div');
+    element.style.position = 'absolute';
+    element.style.width = 100;
+    element.style.height = 100;
+    element.style.color = 'red';
+    element.style.fontSize = 30 + 'px';
+    element.innerHTML = 'LOSE';
+    element.style.top = window.innerHeight / 2 + 'px';
+    element.style.left = window.innerWidth / 2 + 100 + 'px';
+    document.body.appendChild(element);
+  }
+}
 
 /*function findRaycasterPoint(event) {
   var parentOffset = container.parentElement,

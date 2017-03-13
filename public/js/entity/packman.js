@@ -30,7 +30,7 @@ let Packman = class {
       }
       currentAngle += direction ? -this.eatSpeed : this.eatSpeed;
 
-      this.threeobj.children[0].rotation.z = currentAngle * Math.PI / 180 ;
+      this.threeobj.children[0].rotation.z = currentAngle * Math.PI / 180;
       setTimeout(run.bind(this), 10);
     }.bind(this), 100)
   };
@@ -64,14 +64,25 @@ let Packman = class {
       //let collision = packmanSphere3.intersectsSphere(rivalSphere3);
       let collision = this.Sphere3.intersectsBox(rivalBox3);
       if (collision) {
+        if (rivals.elements[i].geometry.type == 'BoxGeometry') {
+          this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
+          this.threeobj.position.y += 0.03;
+          this.threeobj.children[1].geometry.boundingSphere.radius += 0.03;
+          rivals.rivalsLength--;
+          createCanvasSpriteText('NICE');
+        } else {
+          this.threeobj.scale.set(this.size.x -= 0.02, this.size.y -= 0.02, this.size.z -= 0.02);
+          this.threeobj.position.y -= 0.03;
+          this.threeobj.children[1].geometry.boundingSphere.radius -= 0.03;
+          createCanvasSpriteText('BAD');          
+        }
         scene.remove(rivals.elements[i]);
         rivals.elements.splice(i, 1);
-        this.threeobj.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
-        this.threeobj.position.y += 0.03;
-        this.threeobj.children[1].geometry.boundingSphere.radius += 0.03;
-        score.innerHTML = rivals.elements.length;
+        score.innerHTML = rivals.rivalsLength;
+        sizePackman.innerHTML = (this.size.x + this.size.y + this.size.z).toFixed(2);
         scene.remove(scoreSprite);
-        scoreSprite = createCanvasSpriteText();
+        scoreSprite = createCanvasSpriteText(rivals.rivalsLength);
+        isFinishGame();
       }
     }
 

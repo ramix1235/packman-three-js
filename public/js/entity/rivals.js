@@ -3,11 +3,12 @@
 let Rivals = class {
   constructor() {
     this.elements = [];
+    this.rivalsLength = 0;
   }
 
   create() {
     // let count = 600, min = -58, max = 58;
-    let count = 60, min = -50, max = 50;
+    let count = 2, min = -48, max = 48;
     const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
     boxGeometry.computeBoundingBox();
     const boxTexture = new THREE.TextureLoader().load('public/textures/box-rivals.jpg');
@@ -31,6 +32,9 @@ let Rivals = class {
         map: boxTexture
       })
     ]);
+
+    let cylinderGeometry = new THREE.CylinderGeometry(1, 1, 3, 32);
+    let cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
     let positionX;
     let positionZ;
@@ -58,7 +62,14 @@ let Rivals = class {
 
       };
 
-      let mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+      let number = Math.floor(Math.random() * (50 - 0 + 1)) + 0;
+      let mesh;
+      if (number % 2 === 0) {
+        mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+        this.rivalsLength++;
+      } else {
+        mesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);        
+      }
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       mesh.position.set(positionX, 1.5, positionZ);

@@ -17,6 +17,7 @@ let rivals;
 let container;
 let floor;
 let score;
+let sizePackman;
 let scoreSprite;
 
 // let minMesh, maxMesh, box, packmanBox3;
@@ -68,9 +69,13 @@ function init() {
 
   floor = createFloor();
 
-  score = createHTMLText(rivals.elements.length, 100, 60);
-  scoreSprite = createCanvasSpriteText();
-  createHTMLText(`${rivals.elements.length} /`, 100, 10);
+  createHTMLText(`Elements ${rivals.rivalsLength}/`, 100, 10);
+  score = createHTMLText(rivals.rivalsLength, 100, 170);
+
+  createHTMLText('Size', 130, 10);
+  sizePackman = createHTMLText(packman.size.x + packman.size.y + packman.size.z, 130, 70);
+
+  scoreSprite = createCanvasSpriteText(rivals.rivalsLength);
   createText('packman');
   /* box = new THREE.Box3().setFromObject(packman.threeobj);
     minMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
