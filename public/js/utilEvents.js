@@ -8,15 +8,15 @@ function onWindowResize() {
 };
 
 function createLight() {
-  /*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
-    scene.add(ambientLightent);*/
+/*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
+  scene.add(ambientLightent);*/
 
   const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
   directionalLight.castShadow = true;
   scene.add(directionalLight);
 
   spotLight = new THREE.SpotLight(0xFFFFFF, 2);
-  spotLight.position.set(0, 25, 0);
+  spotLight.position.set(10, 25, 10);
 
   spotLight.castShadow = true;
 
@@ -73,7 +73,7 @@ function onFloor(floor) {
 function resetPackman() {
   gameOver = false;
   packman.threeobj.position.set(0, currentPosition.y, 0);
-  spotLight.position.set(packman.threeobj.position.x, 25, packman.threeobj.position.z);
+  spotLight.position.set(packman.threeobj.position.x + 10, 25, packman.threeobj.position.z + 10);
   camera.position.set(0, 10, 20);
   packman.threeobj.rotation.x = 0;
   packman.threeobj.rotation.y = 0;
@@ -82,12 +82,10 @@ function resetPackman() {
 }
 
 function isFinishGame() {
-  if (rivals.rivalsLength == 0 && packman.size.x + packman.size.y + packman.size.z >= 4) {
+  if (rivals.rivalsLength == 0 && packman.size.x + packman.size.y + packman.size.z >= 5.5) {
     let element = document.createElement('div');
     element.style.position = 'absolute';
-    element.style.width = 100;
-    element.style.height = 100;
-    element.style.color = 'red';
+    element.style.color = '#FFCC00';
     element.style.fontSize = 30 + 'px';
     element.innerHTML = 'WIN';
     element.style.top = window.innerHeight / 2 + 'px';
@@ -97,9 +95,7 @@ function isFinishGame() {
   else if (rivals.rivalsLength == 0) {
     let element = document.createElement('div');
     element.style.position = 'absolute';
-    element.style.width = 100;
-    element.style.height = 100;
-    element.style.color = 'red';
+    element.style.color = '#FFCC00';
     element.style.fontSize = 30 + 'px';
     element.innerHTML = 'LOSE';
     element.style.top = window.innerHeight / 2 + 'px';

@@ -48,7 +48,7 @@ let Packman = class {
 
     this.threeobj.rotation.x = mouse.y;
 
-    spotLight.position.set(position.x, 25, position.z);
+    spotLight.position.set(position.x + 10, 25, position.z + 10);
     scoreSprite.position.set(position.x, position.y, position.z);
   };
 
@@ -69,12 +69,10 @@ let Packman = class {
           this.threeobj.position.y += 0.03;
           this.threeobj.children[1].geometry.boundingSphere.radius += 0.03;
           rivals.rivalsLength--;
-          createCanvasSpriteText('NICE');
         } else {
           this.threeobj.scale.set(this.size.x -= 0.02, this.size.y -= 0.02, this.size.z -= 0.02);
           this.threeobj.position.y -= 0.03;
           this.threeobj.children[1].geometry.boundingSphere.radius -= 0.03;
-          createCanvasSpriteText('BAD');          
         }
         scene.remove(rivals.elements[i]);
         rivals.elements.splice(i, 1);
@@ -192,9 +190,9 @@ let Packman = class {
 
     // const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 180, Math.PI * 2, 90 * Math.PI / 180, Math.PI);
-    const sphereTopTexture = new THREE.TextureLoader().load('public/textures/lava.jpg');
+    const sphereTopTexture = new THREE.TextureLoader().load('public/textures/smile-top.jpg');
     // const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 0.7 });
-    const sphereTopMaterial = new THREE.MeshLambertMaterial({ map: sphereTopTexture, transparent: true });
+    const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 0.8 });
     const sphereTopMesh = new THREE.Mesh(sphereTopGeometry, sphereTopMaterial);
     sphereTopMesh.position.y = Math.PI / 2;
     sphereTopMesh.rotation.z = Math.PI / 2;
@@ -209,8 +207,8 @@ let Packman = class {
 
     const sphereBottomGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     sphereBottomGeometry.computeBoundingSphere();
-    const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/lava.jpg');
-    const sphereBottomMaterial = new THREE.MeshLambertMaterial({ map: sphereBottomTexture, transparent: true });
+    const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/smile-bottom.jpg');
+    const sphereBottomMaterial = new THREE.MeshStandardMaterial({ map: sphereBottomTexture, transparent: true, roughness: 0.8 });
     const sphereBottomMesh = new THREE.Mesh(sphereBottomGeometry, sphereBottomMaterial);
     sphereBottomMesh.castShadow = true;
     let groupMesh = new THREE.Group();

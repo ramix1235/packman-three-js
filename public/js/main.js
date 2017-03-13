@@ -39,7 +39,7 @@ function init() {
   container = document.getElementById('scene');
   document.body.appendChild(container);
 
-  scene.fog = new THREE.FogExp2(0x000000, 0.03);
+  scene.fog = new THREE.FogExp2(0xFFFFFF, 0.02);
 
   const axis = new THREE.AxisHelper(20);
   //scene.add(axis);
@@ -55,7 +55,7 @@ function init() {
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  // renderer.setClearColor(0xFFFFFF);
+  renderer.setClearColor(0xFFFFFF);
   renderer.shadowMap.enabled = true;
   container.appendChild(renderer.domElement);
 
@@ -70,10 +70,10 @@ function init() {
   floor = createFloor();
 
   createHTMLText(`Elements ${rivals.rivalsLength}/`, 100, 10);
-  score = createHTMLText(rivals.rivalsLength, 100, 170);
+  score = createHTMLText(rivals.rivalsLength, 100, 130);
 
   createHTMLText('Size', 130, 10);
-  sizePackman = createHTMLText(packman.size.x + packman.size.y + packman.size.z, 130, 70);
+  sizePackman = createHTMLText(packman.size.x + packman.size.y + packman.size.z, 130, 55);
 
   scoreSprite = createCanvasSpriteText(rivals.rivalsLength);
   createText('packman');

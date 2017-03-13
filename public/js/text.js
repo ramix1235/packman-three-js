@@ -6,7 +6,7 @@ function createText(text) {
       size: 2.5,
       height: 0.3
     });
-    let textMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, specular: 0xFFFFFF });
+    let textMaterial = new THREE.MeshPhongMaterial({ color: 0xFFCC00, specular: 0xFFFFFF });
     let score = new THREE.Mesh(textGeo, textMaterial);
     score.position.set(2, 0, 0);
     score.castShadow = true;
@@ -16,13 +16,11 @@ function createText(text) {
   });
 }
 
-function createHTMLText(text, PosY = 100, PosX = 10) {
+function createHTMLText(text, PosY, PosX) {
   let element = document.createElement('div');
   element.style.position = 'absolute';
-  element.style.width = 100;
-  element.style.height = 100;
-  element.style.color = 'red';
-  element.style.fontSize = 30 + 'px';
+  element.style.color = '#FFCC00';
+  element.style.fontSize = 17 + 'pt';
   element.innerHTML = text;
   element.style.top = PosY + 'px';
   element.style.left = PosX + 'px';
@@ -38,12 +36,12 @@ function createCanvasSpriteText(text) {
   context.textAlign = 'center';
   context.imageSmoothingEnabled = false;
   context.font = '65px Arial';
-  context.fillStyle = 'rgba(255, 0, 0, 0.5)';
+  context.fillStyle = 'rgba(255, 204, 0, 0.5)';
   context.fillText(text, 125, 85);
   let texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
   //var spriteMap = new THREE.TextureLoader().load('../../public/textures/eye.jpg');
-  let spriteMaterial = new THREE.SpriteMaterial({ map: texture, color: 0xFFFFFF });
+  let spriteMaterial = new THREE.SpriteMaterial({ map: texture, color: 0xFFCC00 });
   let sprite = new THREE.Sprite(spriteMaterial);
   sprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
   sprite.scale.set(2, 2, 2);

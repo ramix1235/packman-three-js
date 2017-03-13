@@ -8,10 +8,10 @@ let Rivals = class {
 
   create() {
     // let count = 600, min = -58, max = 58;
-    let count = 2, min = -48, max = 48;
+    let count = 100, min = -48, max = 48;
     const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
     boxGeometry.computeBoundingBox();
-    const boxTexture = new THREE.TextureLoader().load('public/textures/box-rivals.jpg');
+    const boxTexture = new THREE.TextureLoader().load('public/textures/box-rivals.png');
     const boxMaterial = new THREE.MultiMaterial([
       new THREE.MeshLambertMaterial({
         map: boxTexture
@@ -34,7 +34,8 @@ let Rivals = class {
     ]);
 
     let cylinderGeometry = new THREE.CylinderGeometry(1, 1, 3, 32);
-    let cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const cylinderTexture = new THREE.TextureLoader().load('public/textures/rivals-cylinder.jpg');    
+    let cylinderMaterial = new THREE.MeshBasicMaterial({ map: cylinderTexture });
 
     let positionX;
     let positionZ;
@@ -68,7 +69,7 @@ let Rivals = class {
         mesh = new THREE.Mesh(boxGeometry, boxMaterial);
         this.rivalsLength++;
       } else {
-        mesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);        
+        mesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
       }
       mesh.castShadow = true;
       mesh.receiveShadow = true;

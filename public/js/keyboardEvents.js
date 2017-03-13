@@ -36,5 +36,5 @@ function onKeyDown(event) {
   //camera.position.z = packman.threeobj.position.z + 20;
   camera.position.set(packman.threeobj.position.x, 40, packman.threeobj.position.z);
   scoreSprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
-  spotLight.position.set(packman.threeobj.position.x, 25, packman.threeobj.position.z);
+  spotLight.position.set(packman.threeobj.position.x + 10, 25, packman.threeobj.position.z + 10);
 }
