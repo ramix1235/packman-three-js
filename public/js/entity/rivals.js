@@ -8,11 +8,11 @@ let Rivals = class {
 
   create() {
     // let count = 600, min = -58, max = 58;
-    let count = 100, min = -48, max = 48;
-    const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
+    let count = 160, min = -48, max = 48;
+    const boxGeometry = new THREE.BoxGeometry(3, 3, 1);
     boxGeometry.computeBoundingBox();
     const boxTexture = new THREE.TextureLoader().load('public/textures/box-rivals.png');
-    const boxMaterial = new THREE.MultiMaterial([
+/*    const boxMaterial = new THREE.MultiMaterial([
       new THREE.MeshLambertMaterial({
         map: boxTexture
       }),
@@ -31,11 +31,13 @@ let Rivals = class {
       new THREE.MeshLambertMaterial({
         map: boxTexture
       })
-    ]);
+    ]);*/
 
-    let cylinderGeometry = new THREE.CylinderGeometry(1, 1, 3, 32);
+    const boxMaterial = new THREE.MeshPhongMaterial({ color: 0xFFCC00, specular: 0xFFFFFF })
+
+    let cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1, 6);
     const cylinderTexture = new THREE.TextureLoader().load('public/textures/rivals-cylinder.jpg');    
-    let cylinderMaterial = new THREE.MeshBasicMaterial({ map: cylinderTexture });
+    let cylinderMaterial = new THREE.MeshPhongMaterial({ color: 0xA2231D, specular: 0xFFFFFF });
 
     let positionX;
     let positionZ;
@@ -63,17 +65,19 @@ let Rivals = class {
 
       };
 
-      let number = Math.floor(Math.random() * (50 - 0 + 1)) + 0;
+      let number = Math.floor(Math.random() * (180 - 0 + 1)) + 0;
       let mesh;
       if (number % 2 === 0) {
         mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+        mesh.position.set(positionX, 1.5, positionZ);
         this.rivalsLength++;
       } else {
         mesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+        mesh.position.set(positionX, 0.5, positionZ);
       }
+      mesh.rotation.y = number * Math.PI / 180;
       mesh.castShadow = true;
       mesh.receiveShadow = true;
-      mesh.position.set(positionX, 1.5, positionZ);
       scene.add(mesh);
       this.elements.push(mesh);
 

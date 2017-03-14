@@ -6,7 +6,7 @@ function createText(text) {
       size: 2.5,
       height: 0.3
     });
-    let textMaterial = new THREE.MeshPhongMaterial({ color: 0xFFCC00, specular: 0xFFFFFF });
+    let textMaterial = new THREE.MeshPhongMaterial({ color: 0xA2231D, specular: 0xFFFFFF });
     let score = new THREE.Mesh(textGeo, textMaterial);
     score.position.set(2, 0, 0);
     score.castShadow = true;
@@ -19,7 +19,7 @@ function createText(text) {
 function createHTMLText(text, PosY, PosX) {
   let element = document.createElement('div');
   element.style.position = 'absolute';
-  element.style.color = '#FFCC00';
+  element.style.color = '#E32636';
   element.style.fontSize = 17 + 'pt';
   element.innerHTML = text;
   element.style.top = PosY + 'px';
@@ -36,14 +36,14 @@ function createCanvasSpriteText(text) {
   context.textAlign = 'center';
   context.imageSmoothingEnabled = false;
   context.font = '65px Arial';
-  context.fillStyle = 'rgba(255, 204, 0, 0.5)';
+  context.fillStyle = 'rgba(165, 35, 29, 0.5)';
   context.fillText(text, 125, 85);
   let texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
   //var spriteMap = new THREE.TextureLoader().load('../../public/textures/eye.jpg');
   let spriteMaterial = new THREE.SpriteMaterial({ map: texture, color: 0xFFCC00 });
   let sprite = new THREE.Sprite(spriteMaterial);
-  sprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
+  //sprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
   sprite.scale.set(2, 2, 2);
   scene.add(sprite);
   return sprite;

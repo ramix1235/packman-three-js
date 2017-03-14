@@ -19,6 +19,9 @@ let floor;
 let score;
 let sizePackman;
 let scoreSprite;
+let mirrorCubeCamera, mirrorCube;
+let verticalMirror; 
+let needUpdateMirror = false;
 
 // let minMesh, maxMesh, box, packmanBox3;
 
@@ -56,6 +59,7 @@ function init() {
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0xFFFFFF);
+  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.shadowMap.enabled = true;
   container.appendChild(renderer.domElement);
 
@@ -69,11 +73,35 @@ function init() {
 
   floor = createFloor();
 
+  //Create cube camera
+  mirrorCubeCamera = new THREE.CubeCamera(0.1, 50, 512);
+  mirrorCubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
+  scene.add(mirrorCubeCamera);
+
+  //Create cube
+  var cubeGeom = new THREE.CubeGeometry(3, 3, 3);
+  var mirrorCubeMaterial = new THREE.MeshBasicMaterial({ envMap: mirrorCubeCamera.renderTarget });
+  mirrorCube = new THREE.Mesh(cubeGeom, mirrorCubeMaterial);
+  mirrorCube.rotation.x = 90 * Math.PI / 180;
+  mirrorCube.position.set(-5, 1.5, 0);
+  mirrorCubeCamera.position.set(mirrorCube.position.x, mirrorCube.position.y, mirrorCube.position.z);
+  //scene.add(mirrorCube);
+  mirrorCube.visible = false;
+  mirrorCubeCamera.updateCubeMap(renderer, scene);
+  mirrorCube.visible = true;
+
+  verticalMirror = new THREE.Mirror(renderer, camera, { clipBias: 0.003, textureWidth: window.innerWidth, textureHeight: window.innerHeight, color: 0x889999 });
+  var verticalMirrorMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(100, 100), verticalMirror.material);
+  verticalMirrorMesh.add(verticalMirror);
+  verticalMirrorMesh.position.y = 0;
+  verticalMirrorMesh.position.z = -50;
+  scene.add(verticalMirrorMesh);
+
   createHTMLText(`Elements ${rivals.rivalsLength}/`, 100, 10);
   score = createHTMLText(rivals.rivalsLength, 100, 130);
 
-  createHTMLText('Size', 130, 10);
-  sizePackman = createHTMLText(packman.size.x + packman.size.y + packman.size.z, 130, 55);
+  createHTMLText('Size 7/', 130, 10);
+  sizePackman = createHTMLText(packman.size.x + packman.size.y + packman.size.z, 130, 75);
 
   scoreSprite = createCanvasSpriteText(rivals.rivalsLength);
   createText('packman');
@@ -101,12 +129,22 @@ function animate() {
     activeObject.move();
     updateCameraPosition();
   };
+  scoreSprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
+  //spotLight.position.set(camera.position.x - 5, camera.position.y, camera.position.z + 3);
   packman.collision();
   render();
   requestAnimationFrame(animate);
 };
 
 function render() {
+  needUpdateMirror = !needUpdateMirror;
+/*  if (needUpdateMirror) {
+    //Update the render target cube
+    mirrorCube.visible = false;
+    mirrorCubeCamera.updateCubeMap(renderer, scene);
+    mirrorCube.visible = true;
+  };*/
+  verticalMirror.render();
   controls.update();
   stats.update();
   onFloor(floor);

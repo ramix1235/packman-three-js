@@ -8,15 +8,16 @@ function onWindowResize() {
 };
 
 function createLight() {
-/*  const ambientLightent = new THREE.AmbientLight(0xffffff, 3);
+/*  const ambientLightent = new THREE.AmbientLight(0xffffff, 0.8);
   scene.add(ambientLightent);*/
 
-  const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+  const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.01);
   directionalLight.castShadow = true;
-  scene.add(directionalLight);
+  //scene.add(directionalLight);
 
-  spotLight = new THREE.SpotLight(0xFFFFFF, 2);
-  spotLight.position.set(10, 25, 10);
+  spotLight = new THREE.SpotLight(0xFFFFFF, 1.5);
+  //spotLight.position.set(camera.position.x - 5, camera.position.y, camera.position.z + 3);
+  spotLight.position.set(0, 41, 0);
 
   spotLight.castShadow = true;
 
@@ -32,7 +33,8 @@ function createFloor() {
   const planeTexture = new THREE.TextureLoader().load('public/textures/road.jpg');
   planeTexture.wrapS = THREE.RepeatWrapping;
   planeTexture.wrapT = THREE.RepeatWrapping;
-  planeTexture.repeat.set(10, 10);
+  planeTexture.repeat.set(25, 25);
+  //const planeMaterial = new THREE.MeshStandardMaterial({ map: planeTexture, roughness: 1 });
   const planeMaterial = new THREE.MeshLambertMaterial({ map: planeTexture });
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.castShadow = true;
@@ -59,13 +61,13 @@ function onFloor(floor) {
     gameOver = true;
     setTimeout(() => {
       resetPackman();
-      let isVisible = true;
+/*      let isVisible = true;
       let changeVisibility = setInterval(() => {
         isVisible = !isVisible;
         packman.threeobj.children[0].children[0].material.opacity = isVisible ? 1 : 0.1;
         packman.threeobj.children[1].material.opacity = isVisible ? 1 : 0.1;
       }, 100);
-      setTimeout(() => { clearInterval(changeVisibility) }, 1000);
+      setTimeout(() => { clearInterval(changeVisibility) }, 1000);*/
     }, 1000);
   }
 };
@@ -73,7 +75,7 @@ function onFloor(floor) {
 function resetPackman() {
   gameOver = false;
   packman.threeobj.position.set(0, currentPosition.y, 0);
-  spotLight.position.set(packman.threeobj.position.x + 10, 25, packman.threeobj.position.z + 10);
+  //spotLight.position.set(packman.threeobj.position.x + 10, 25, packman.threeobj.position.z + 10);
   camera.position.set(0, 10, 20);
   packman.threeobj.rotation.x = 0;
   packman.threeobj.rotation.y = 0;
@@ -82,7 +84,7 @@ function resetPackman() {
 }
 
 function isFinishGame() {
-  if (rivals.rivalsLength == 0 && packman.size.x + packman.size.y + packman.size.z >= 5.5) {
+  if (rivals.rivalsLength == 0 && packman.size.x + packman.size.y + packman.size.z >= 7) {
     let element = document.createElement('div');
     element.style.position = 'absolute';
     element.style.color = '#FFCC00';
@@ -91,6 +93,7 @@ function isFinishGame() {
     element.style.top = window.innerHeight / 2 + 'px';
     element.style.left = window.innerWidth / 2 + 'px';
     document.body.appendChild(element);
+    
   }
   else if (rivals.rivalsLength == 0) {
     let element = document.createElement('div');

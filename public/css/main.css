@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -17,9 +18,8 @@ canvas {
 
 #background {
     position: absolute;
-    left: 0px;
     top: 100px;
     width: 170px;
     height: 57px;
-    background-color: #000;     
+    background-color: #F8F32B;
 }

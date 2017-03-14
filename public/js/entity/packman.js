@@ -48,8 +48,7 @@ let Packman = class {
 
     this.threeobj.rotation.x = mouse.y;
 
-    spotLight.position.set(position.x + 10, 25, position.z + 10);
-    scoreSprite.position.set(position.x, position.y, position.z);
+    //spotLight.position.set(position.x + 10, 25, position.z + 10);
   };
 
   collision() {
@@ -70,6 +69,9 @@ let Packman = class {
           this.threeobj.children[1].geometry.boundingSphere.radius += 0.03;
           rivals.rivalsLength--;
         } else {
+          if (packman.size.x + packman.size.y + packman.size.z < 1.1) {
+            return;
+          }
           this.threeobj.scale.set(this.size.x -= 0.02, this.size.y -= 0.02, this.size.z -= 0.02);
           this.threeobj.position.y -= 0.03;
           this.threeobj.children[1].geometry.boundingSphere.radius -= 0.03;
@@ -80,6 +82,7 @@ let Packman = class {
         sizePackman.innerHTML = (this.size.x + this.size.y + this.size.z).toFixed(2);
         scene.remove(scoreSprite);
         scoreSprite = createCanvasSpriteText(rivals.rivalsLength);
+        //scoreSprite.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
         isFinishGame();
       }
     }
@@ -192,14 +195,26 @@ let Packman = class {
     const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 180, Math.PI * 2, 90 * Math.PI / 180, Math.PI);
     const sphereTopTexture = new THREE.TextureLoader().load('public/textures/smile-top.jpg');
     // const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 0.7 });
-    const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 0.8 });
+    // const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 1 });
+    const sphereTopMaterial = new THREE.MeshPhongMaterial({ color: 0xFFCC00 });
     const sphereTopMesh = new THREE.Mesh(sphereTopGeometry, sphereTopMaterial);
     sphereTopMesh.position.y = Math.PI / 2;
     sphereTopMesh.rotation.z = Math.PI / 2;
     sphereTopMesh.castShadow = true;
 
+    let eyeGeometry = new THREE.CircleGeometry(0.4, 32);
+    let eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    let eyeLeft = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    eyeLeft.rotation.x = -90 * Math.PI / 180;
+    eyeLeft.position.set(1, 2.9, 0.6);
+    let eyeRight = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    eyeRight.rotation.x = -90 * Math.PI / 180;
+    eyeRight.position.set(1, 2.9, -0.6);
+
     const groupSphereTop = new THREE.Group();
     groupSphereTop.add(sphereTopMesh);
+    groupSphereTop.add(eyeLeft);
+    groupSphereTop.add(eyeRight);
     groupSphereTop.position.z = -Math.PI / 180 * 90;
     groupSphereTop.rotation.y = Math.PI / 180 * 90;
 
@@ -208,13 +223,13 @@ let Packman = class {
     const sphereBottomGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     sphereBottomGeometry.computeBoundingSphere();
     const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/smile-bottom.jpg');
-    const sphereBottomMaterial = new THREE.MeshStandardMaterial({ map: sphereBottomTexture, transparent: true, roughness: 0.8 });
+    const sphereBottomMaterial = new THREE.MeshPhongMaterial({ color: 0xFFCC00 });
     const sphereBottomMesh = new THREE.Mesh(sphereBottomGeometry, sphereBottomMaterial);
     sphereBottomMesh.castShadow = true;
     let groupMesh = new THREE.Group();
     groupMesh.add(groupSphereTop, sphereBottomMesh);
     groupMesh.position.set(0, 1.5, 0);
-    spotLight.target = groupMesh;
+    //spotLight.target = groupMesh;
     scene.add(groupMesh);
 
     return groupMesh;
