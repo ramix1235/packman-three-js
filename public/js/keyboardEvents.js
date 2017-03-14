@@ -4,37 +4,38 @@ function onKeyDown(event) {
   if (activeObject) {
     return;
   }
-  controls.enableRotate = false;
   switch (event.key) {
     case 'w':
+    case 'Up':
     case 'ArrowUp':
       packman.threeobj.position.z -= 1;
-      packman.threeobj.rotation.y = 3 * Math.PI;
-      packman.threeobj.rotation.x = 0; 
+      packman.threeobj.rotation.y = Math.PI;
+      packman.threeobj.rotation.x = 0;
       break;
     case 's':
+    case 'Down':
     case 'ArrowDown':
       packman.threeobj.position.z += 1;
-      packman.threeobj.rotation.y = 0;
-      packman.threeobj.rotation.x = 0;       
+      packman.threeobj.rotation.y = Math.PI / 180;
+      packman.threeobj.rotation.x = 0;
       break;
     case 'a':
+    case 'Left':
     case 'ArrowLeft':
       packman.threeobj.position.x -= 1;
-      packman.threeobj.rotation.y = 3 * Math.PI / 2;
+      packman.threeobj.rotation.y = -90 * Math.PI / 180;
       packman.threeobj.rotation.x = 0;
       break;
     case 'd':
+    case 'Right':
     case 'ArrowRight':
       packman.threeobj.position.x += 1;
-      packman.threeobj.rotation.y = Math.PI / 2;
+      packman.threeobj.rotation.y = 90 * Math.PI / 180;
       packman.threeobj.rotation.x = 0;
       break;
     default: return;
   }
-  //camera.position.x = packman.threeobj.position.x;
-  //camera.position.z = packman.threeobj.position.z + 20;
-  camera.position.set(packman.threeobj.position.x, 40, packman.threeobj.position.z);
-  scoreSprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
-  //spotLight.position.set(packman.threeobj.position.x + 10, 25, packman.threeobj.position.z + 10);
-}
+  controls.enableRotate = false;
+  camera.position.set(packman.threeobj.position.x, 41, packman.threeobj.position.z);
+  statsScoreSprite.position.copy(packman.threeobj.position);
+};

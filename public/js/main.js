@@ -1,29 +1,17 @@
 'use strict';
 
-let scene = new THREE.Scene(),
-  camera,
-  controls,
-  renderer,
-  mouse = new THREE.Vector2(),
-  raycaster,
-  spotLight,
-  directionalLight,
-  stats;
-// mousePos = {};
-
-let activeObject = null;
-let packman;
-let rivals;
-let container;
-let floor;
-let score;
-let sizePackman;
-let scoreSprite;
-let mirrorCubeCamera, mirrorCube;
-let verticalMirror; 
-let needUpdateMirror = false;
-
-// let minMesh, maxMesh, box, packmanBox3;
+const requiredPackmanSize = 7;
+let stats, scene, camera, controls, renderer;
+let packman, rivals, activeObject;
+let statsScore, statsPackmanSize, statsScoreSprite;
+let floorParams = {
+  width: 100,
+  height: 100
+};
+let mirrorParams = {
+  width: floorParams.width,
+  height: 50
+};
 
 init();
 animate();
@@ -35,23 +23,19 @@ function init() {
   }
   stats = new Stats();
   stats.domElement.style.position = 'absolute';
-  stats.domElement.style.left = '0px';
-  stats.domElement.style.top = '0px';
   document.body.appendChild(stats.domElement);
 
-  container = document.getElementById('scene');
+  const container = document.getElementById('scene');
   document.body.appendChild(container);
 
+  scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0xFFFFFF, 0.02);
-
-  const axis = new THREE.AxisHelper(20);
-  //scene.add(axis);
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
   camera.position.set(0, 10, 20);
 
   controls = new THREE.OrbitControls(camera);
-  controls.maxPolarAngle = Math.PI / 2;
+  controls.maxPolarAngle = 90 * Math.PI / 180;
   controls.maxDisnatce = 10;
   controls.minDistance = 5;
   controls.enablePan = false;
@@ -59,63 +43,21 @@ function init() {
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0xFFFFFF);
-  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.shadowMap.enabled = true;
   container.appendChild(renderer.domElement);
 
   createLight();
-
+  createFloor();
+  createMirror();
   packman = new Packman();
   packman.create();
-
   rivals = new Rivals();
-  rivals.create();
+  rivals.create(160, -floorParams.width / 2 + 2, floorParams.height / 2 - 2);
 
-  floor = createFloor();
-
-  //Create cube camera
-  mirrorCubeCamera = new THREE.CubeCamera(0.1, 50, 512);
-  mirrorCubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
-  scene.add(mirrorCubeCamera);
-
-  //Create cube
-  let cubeGeom = new THREE.CubeGeometry(3, 3, 3);
-  let mirrorCubeMaterial = new THREE.MeshBasicMaterial({ envMap: mirrorCubeCamera.renderTarget });
-  mirrorCube = new THREE.Mesh(cubeGeom, mirrorCubeMaterial);
-  mirrorCube.rotation.x = 90 * Math.PI / 180;
-  mirrorCube.position.set(-5, 1.5, 0);
-  mirrorCubeCamera.position.set(mirrorCube.position.x, mirrorCube.position.y, mirrorCube.position.z);
-  //scene.add(mirrorCube);
-  mirrorCube.visible = false;
-  mirrorCubeCamera.updateCubeMap(renderer, scene);
-  mirrorCube.visible = true;
-
-  verticalMirror = new THREE.Mirror(renderer, camera, { clipBias: 0.003, textureWidth: window.innerWidth, textureHeight: window.innerHeight, color: 0x889999 });
-  let verticalMirrorMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(100, 100), verticalMirror.material);
-  verticalMirrorMesh.add(verticalMirror);
-  verticalMirrorMesh.position.y = 0;
-  verticalMirrorMesh.position.z = -50;
-  scene.add(verticalMirrorMesh);
-
-  createHTMLText(`Elements ${rivals.rivalsLength}/`, 100, 10);
-  score = createHTMLText(rivals.rivalsLength, 100, 130);
-
-  createHTMLText('Size 7/', 130, 10);
-  sizePackman = createHTMLText(packman.size.x + packman.size.y + packman.size.z, 130, 75);
-
-  scoreSprite = createCanvasSpriteText(rivals.rivalsLength);
-  createText('packman');
-  /* box = new THREE.Box3().setFromObject(packman.threeobj);
-    minMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
-    minMesh.position.copy(box.min);
-    scene.add(minMesh);
-    maxMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4));
-    maxMesh.position.copy(box.max);
-    scene.add(maxMesh);*/
-
-  /* packmanBox3 = new THREE.Box3().setFromObject(packman.threeobj);
-    let boxHelper = new THREE.BoxHelper(packmanBox3, 0xffffff);
-    scene.add(boxHelper);*/
+  statsScore = createHTMLText(`Elements: ${rivals.rivalsLength}/${rivals.rivalsLength}`, 10, 100);
+  statsPackmanSize = createHTMLText(`Size ${requiredPackmanSize}/${getSumPackmanSize()}`, 10, 130);
+  statsScoreSprite = createCanvasSpriteText(rivals.rivalsLength);
+  create3DText('packman', 2, 0, 0);
 
   window.addEventListener('resize', onWindowResize, false);
   document.addEventListener('mousedown', onMouseDown, false);
@@ -125,30 +67,52 @@ function init() {
 };
 
 function animate() {
-  if (activeObject) {
-    activeObject.move();
-    updateCameraPosition();
-  };
-  scoreSprite.position.set(packman.threeobj.position.x, packman.threeobj.position.y, packman.threeobj.position.z);
-  //spotLight.position.set(camera.position.x - 5, camera.position.y, camera.position.z + 3);
-  packman.collision();
   render();
   requestAnimationFrame(animate);
 };
 
 function render() {
-  needUpdateMirror = !needUpdateMirror;
-/*  if (needUpdateMirror) {
-    //Update the render target cube
-    mirrorCube.visible = false;
-    mirrorCubeCamera.updateCubeMap(renderer, scene);
-    mirrorCube.visible = true;
-  };*/
-  verticalMirror.render();
+  if (activeObject) {
+    activeObject.move();
+    updateCameraPosition();
+  }
+  packmanOnFloor();
+  packman.collision();
+  mirrorParams.mirror.render();
+  statsScoreSprite.position.copy(packman.threeobj.position);
   controls.update();
   stats.update();
-  onFloor(floor);
   renderer.render(scene, camera);
 };
 
+function createLight() {
+  const spotLight = new THREE.SpotLight(0xFFFFFF, 1.5);
+  spotLight.position.set(0, 41, 0);
+  spotLight.castShadow = true;
+  spotLight.shadow.mapSize.width = 2048;
+  spotLight.shadow.mapSize.height = 2048;
+  scene.add(spotLight);
+};
 
+function createFloor() {
+  const planeGeometry = new THREE.PlaneGeometry(floorParams.width, floorParams.height);
+  const planeTexture = new THREE.TextureLoader().load('public/textures/floor.jpg');
+  const planeMaterial = new THREE.MeshLambertMaterial({ map: planeTexture });
+  planeTexture.wrapS = THREE.RepeatWrapping;
+  planeTexture.wrapT = THREE.RepeatWrapping;
+  planeTexture.repeat.set(25, 25);
+  floorParams.floor = new THREE.Mesh(planeGeometry, planeMaterial);
+  floorParams.floor.castShadow = true;
+  floorParams.floor.receiveShadow = true;
+  floorParams.floor.rotation.x = -90 * Math.PI / 180;
+  scene.add(floorParams.floor);
+};
+
+function createMirror() {
+  mirrorParams.mirror = new THREE.Mirror(renderer, camera, { clipBias: 0.003, textureWidth: window.innerWidth, textureHeight: window.innerHeight, color: 0x889999 });
+  mirrorParams.mirrorMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(mirrorParams.width, mirrorParams.height), mirrorParams.mirror.material);
+  mirrorParams.mirrorMesh.add(mirrorParams.mirror);
+  mirrorParams.mirrorMesh.position.y = mirrorParams.height / 2;
+  mirrorParams.mirrorMesh.position.z = -floorParams.height / 2;
+  scene.add(mirrorParams.mirrorMesh);
+};

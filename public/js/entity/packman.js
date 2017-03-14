@@ -47,8 +47,6 @@ let Packman = class {
     rotation.y = radians;
 
     this.threeobj.rotation.x = mouse.y;
-
-    //spotLight.position.set(position.x + 10, 25, position.z + 10);
   };
 
   collision() {
@@ -68,8 +66,9 @@ let Packman = class {
           this.threeobj.position.y += 0.03;
           this.threeobj.children[1].geometry.boundingSphere.radius += 0.03;
           rivals.rivalsLength--;
+          rivals.deletedElements++;
         } else {
-          if (packman.size.x + packman.size.y + packman.size.z < 1.1) {
+          if (getSumPackmanSize() < 1.1) {
             return;
           }
           this.threeobj.scale.set(this.size.x -= 0.02, this.size.y -= 0.02, this.size.z -= 0.02);
@@ -78,10 +77,11 @@ let Packman = class {
         }
         scene.remove(rivals.elements[i]);
         rivals.elements.splice(i, 1);
-        score.innerHTML = rivals.rivalsLength;
-        sizePackman.innerHTML = (this.size.x + this.size.y + this.size.z).toFixed(2);
-        scene.remove(scoreSprite);
-        scoreSprite = createCanvasSpriteText(rivals.rivalsLength);
+        //statsScore.innerHTML = rivals.rivalsLength;
+        statsScore.innerHTML = `Elements: ${rivals.rivalsLength + rivals.deletedElements}/${rivals.rivalsLength}`;
+        statsPackmanSize.innerHTML = `Size ${requiredPackmanSize}/${(getSumPackmanSize()).toFixed(2)}`;
+        scene.remove(statsScoreSprite);
+        statsScoreSprite = createCanvasSpriteText(rivals.rivalsLength);
         //scoreSprite.scale.set(this.size.x += 0.02, this.size.y += 0.02, this.size.z += 0.02);
         isFinishGame();
       }
@@ -152,8 +152,8 @@ let Packman = class {
 
   draw() {
     const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
-    const boxTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
-    const boxMaterial = new THREE.MultiMaterial([
+    //const boxTexture = new THREE.TextureLoader().load('public/textures/crate.gif');
+/*    const boxMaterial = new THREE.MultiMaterial([
       new THREE.MeshLambertMaterial({
         map: boxTexture
       }),
@@ -172,7 +172,7 @@ let Packman = class {
       new THREE.MeshLambertMaterial({
         map: boxTexture
       })
-    ]);
+    ]);*/
 
     // const sphereGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, 0, Math.PI); // default
 
@@ -193,7 +193,7 @@ let Packman = class {
 
     // const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     const sphereTopGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 180, Math.PI * 2, 90 * Math.PI / 180, Math.PI);
-    const sphereTopTexture = new THREE.TextureLoader().load('public/textures/smile-top.jpg');
+    //const sphereTopTexture = new THREE.TextureLoader().load('public/textures/smile-top.jpg');
     // const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 0.7 });
     // const sphereTopMaterial = new THREE.MeshStandardMaterial({ map: sphereTopTexture, transparent: true, roughness: 1 });
     const sphereTopMaterial = new THREE.MeshPhongMaterial({ color: 0xFFCC00 });
@@ -222,14 +222,13 @@ let Packman = class {
 
     const sphereBottomGeometry = new THREE.SphereGeometry(1.5, 50, 50, -Math.PI / 2, Math.PI * 2, Math.PI / 2, Math.PI);
     sphereBottomGeometry.computeBoundingSphere();
-    const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/smile-bottom.jpg');
+    //const sphereBottomTexture = new THREE.TextureLoader().load('public/textures/smile-bottom.jpg');
     const sphereBottomMaterial = new THREE.MeshPhongMaterial({ color: 0xFFCC00 });
     const sphereBottomMesh = new THREE.Mesh(sphereBottomGeometry, sphereBottomMaterial);
     sphereBottomMesh.castShadow = true;
     let groupMesh = new THREE.Group();
     groupMesh.add(groupSphereTop, sphereBottomMesh);
     groupMesh.position.set(0, 1.5, 0);
-    //spotLight.target = groupMesh;
     scene.add(groupMesh);
 
     return groupMesh;
