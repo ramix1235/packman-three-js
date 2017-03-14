@@ -79,8 +79,8 @@ function init() {
   scene.add(mirrorCubeCamera);
 
   //Create cube
-  var cubeGeom = new THREE.CubeGeometry(3, 3, 3);
-  var mirrorCubeMaterial = new THREE.MeshBasicMaterial({ envMap: mirrorCubeCamera.renderTarget });
+  let cubeGeom = new THREE.CubeGeometry(3, 3, 3);
+  let mirrorCubeMaterial = new THREE.MeshBasicMaterial({ envMap: mirrorCubeCamera.renderTarget });
   mirrorCube = new THREE.Mesh(cubeGeom, mirrorCubeMaterial);
   mirrorCube.rotation.x = 90 * Math.PI / 180;
   mirrorCube.position.set(-5, 1.5, 0);
@@ -91,7 +91,7 @@ function init() {
   mirrorCube.visible = true;
 
   verticalMirror = new THREE.Mirror(renderer, camera, { clipBias: 0.003, textureWidth: window.innerWidth, textureHeight: window.innerHeight, color: 0x889999 });
-  var verticalMirrorMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(100, 100), verticalMirror.material);
+  let verticalMirrorMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(100, 100), verticalMirror.material);
   verticalMirrorMesh.add(verticalMirror);
   verticalMirrorMesh.position.y = 0;
   verticalMirrorMesh.position.z = -50;

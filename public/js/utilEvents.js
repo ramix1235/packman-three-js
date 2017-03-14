@@ -93,7 +93,7 @@ function isFinishGame() {
     element.style.top = window.innerHeight / 2 + 'px';
     element.style.left = window.innerWidth / 2 + 'px';
     document.body.appendChild(element);
-    
+    resetGame();
   }
   else if (rivals.rivalsLength == 0) {
     let element = document.createElement('div');
@@ -104,7 +104,15 @@ function isFinishGame() {
     element.style.top = window.innerHeight / 2 + 'px';
     element.style.left = window.innerWidth / 2 + 100 + 'px';
     document.body.appendChild(element);
+    resetGame();
   }
+}
+
+function resetGame() {
+  setTimeout(() => {
+    resetPackman()
+  }, 1000);
+
 }
 
 /*function findRaycasterPoint(event) {
