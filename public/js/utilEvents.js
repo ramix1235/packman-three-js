@@ -15,9 +15,9 @@ function packmanOnFloor() {
     return;
   }
   const floorBox3 = new THREE.Box3().setFromObject(floorParams.floor);
-  const floorCollision = packman.Sphere3.intersectsBox(floorBox3);
+  const floorCollision = packman.sphere3.intersectsBox(floorBox3);
   if (floorCollision) {
-    lastPackmanPosition = packman.Sphere3.center.clone();
+    lastPackmanPosition = packman.sphere3.center.clone();
     return;
   }
   isPackmanFall = true;
