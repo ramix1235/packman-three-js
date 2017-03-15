@@ -49,9 +49,9 @@ let Rivals = class {
 
       };
 
-      let randomNnumber = Math.floor(Math.random() * (180 - 0 + 1)) + 0;
+      let randomNumber = Math.floor(Math.random() * (180 - 0 + 1)) + 0;
       let prototypeMesh;
-      if (randomNnumber % 2 === 0) {
+      if (randomNumber % 2 === 0) {
         prototypeMesh = new THREE.Mesh(boxGeometry, boxMaterial);
         prototypeMesh.position.set(newCoordinateX, this.boxParams.height / 2, newCoordinateZ);
         this.rivalsLength++;
@@ -59,7 +59,7 @@ let Rivals = class {
         prototypeMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
         prototypeMesh.position.set(newCoordinateX, this.cylinderParams.height / 2, newCoordinateZ);
       }
-      prototypeMesh.rotation.y = randomNnumber * Math.PI / 180;
+      prototypeMesh.rotation.y = randomNumber * Math.PI / 180;
       prototypeMesh.castShadow = true;
       prototypeMesh.receiveShadow = true;
       scene.add(prototypeMesh);
