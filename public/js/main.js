@@ -3,7 +3,8 @@
 const requiredPackmanSize = 7;
 let stats, scene, camera, controls, renderer;
 let packman, rivals, activeObject;
-let statsScore, statsPackmanSize, statsScoreSprite;
+let countWin = 0, countLose = 0;
+let statsScore, statsPackmanSize, statsScoreSprite, statsWin, statsLose;
 let floorParams = {
   width: 100,
   height: 100
@@ -55,15 +56,13 @@ function init() {
   rivals.create(160, -floorParams.width / 2 + 2, floorParams.height / 2 - 2);
 
   statsScore = createHTMLText(`Elements: ${rivals.rivalsLength}/${rivals.rivalsLength}`, 10, 100);
-  statsPackmanSize = createHTMLText(`Size ${requiredPackmanSize}/${getSumPackmanSize()}`, 10, 130);
+  statsPackmanSize = createHTMLText(`Size: ${requiredPackmanSize}/${getSumPackmanSize()}`, 10, 130);
   statsScoreSprite = createCanvasSpriteText(rivals.rivalsLength);
+  statsWin = createHTMLText(`Win: ${countWin}`, 10, 160);
+  statsLose = createHTMLText(`Lose: ${countLose}`, 10, 190);
   create3DText('packman', 2, 0, 0);
 
-  window.addEventListener('resize', onWindowResize, false);
-  document.addEventListener('mousedown', onMouseDown, false);
-  document.addEventListener('mousemove', onMouseMove, false);
-  document.addEventListener('mouseup', onMouseUp, false);
-  document.addEventListener('keydown', onKeyDown, false);
+  events();
 };
 
 function animate() {
@@ -83,6 +82,14 @@ function render() {
   controls.update();
   stats.update();
   renderer.render(scene, camera);
+};
+
+function events() {
+  window.addEventListener('resize', onWindowResize, false);
+  document.addEventListener('mousedown', onMouseDown, false);
+  document.addEventListener('mousemove', onMouseMove, false);
+  document.addEventListener('mouseup', onMouseUp, false);
+  document.addEventListener('keydown', onKeyDown, false);
 };
 
 function createLight() {

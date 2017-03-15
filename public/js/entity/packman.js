@@ -154,14 +154,14 @@ let Packman = class {
     sphereTopMesh.rotation.z = Math.PI / 2;
     sphereTopMesh.castShadow = true;
 
-    const eyeGeometry = new THREE.CircleGeometry(0.4, 32);
+    const eyeGeometry = new THREE.CircleGeometry(0.4, 7);
     const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
     const eyeLeft = new THREE.Mesh(eyeGeometry, eyeMaterial);
     eyeLeft.rotation.x = -90 * Math.PI / 180;
-    eyeLeft.position.set(1, 2.9, 0.6);
+    eyeLeft.position.set(0.8, 2.9, 0.6);
     const eyeRight = new THREE.Mesh(eyeGeometry, eyeMaterial);
     eyeRight.rotation.x = -90 * Math.PI / 180;
-    eyeRight.position.set(1, 2.9, -0.6);
+    eyeRight.position.set(0.8, 2.9, -0.6);
 
     const groupSphereTop = new THREE.Group();
     groupSphereTop.add(sphereTopMesh);
