@@ -5,6 +5,8 @@ let stats, scene, camera, controls, renderer;
 let packman, rivals, activeObject;
 let countWin = 0, countLose = 0;
 let statsScore, statsPackmanSize, statsScoreSprite, statsWin, statsLose;
+let lastPackmanPosition;
+let isPackmanFall = false;
 let floorParams = {
   width: 100,
   height: 100
@@ -90,6 +92,12 @@ function events() {
   document.addEventListener('mousemove', onMouseMove, false);
   document.addEventListener('mouseup', onMouseUp, false);
   document.addEventListener('keydown', onKeyDown, false);
+};
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
 function createLight() {
